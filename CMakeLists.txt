@@ -25,6 +25,8 @@ set(TACOGL_SRCS
     "${TACOGL_SRCS_DIR}/Program.cpp"
     "${TACOGL_SRCS_DIR}/VertexArray.cpp"
     "${TACOGL_SRCS_DIR}/AttributeFormat.cpp"
+    "${TACOGL_SRCS_DIR}/Framebuffer.cpp"
+    "${TACOGL_SRCS_DIR}/Renderbuffer.cpp"
 )
 
 add_library(TacoGL ${TACOGL_SRCS})
