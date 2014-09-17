@@ -89,6 +89,11 @@ Buffer::~Buffer()
   glDeleteBuffers(1, &m_id);
 }
 
+size_t Buffer::getSize() const
+{
+  return m_size;
+}
+
 void Buffer::bind(gl::GLenum target)
 {
   s_manager.bind(target, m_id);

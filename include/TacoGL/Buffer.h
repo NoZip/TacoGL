@@ -53,7 +53,7 @@ namespace TacoGL
 
     virtual ~Buffer();
 
-    size_t getSize() const { return m_size; }
+    size_t getSize() const;
 
     /**
      * Binds the buffer in the current OpenGl context.
