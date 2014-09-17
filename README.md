@@ -8,5 +8,5 @@ Opengl C++11 wrapper using glbinding.
 	cd build;
 	cmake ..;
 	make TacoGL;
-  make install;
+	make install;
 
