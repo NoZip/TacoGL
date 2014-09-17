@@ -82,6 +82,8 @@ namespace TacoGL
     virtual ~Texture();
 
     Sampler* getSampler() const { return m_sampler; }
+    bool isBinded() const;
+    gl::GLenum getTarget() const;
 
     void setSampler(Sampler *sampler) { m_sampler = sampler; }
     
@@ -102,6 +104,16 @@ namespace TacoGL
     void unbind();
 
     void unbindAll();
+
+    /**
+     * TODO
+     */
+    void getData(
+      size_t level,
+      gl::GLenum format,
+      gl::GLenum type,
+      void *img
+    ) const;
 
     /**
      * Updates texture data, 1 dimension version.
@@ -211,7 +223,7 @@ namespace TacoGL
     size_t getDepth(size_t level = 0) const;
     size_t getSamples(size_t level = 0) const;
     bool getFixedSampleLocations(size_t level = 0) const;
-    // TODO: GL_TEXTURE_INTERNAL_FORMAT
+    gl::GLenum getInternalFormat(size_t level = 0) const; // TODO: GL_TEXTURE_INTERNAL_FORMAT
     // TODO: GL_TEXTURE_SHARED_SIZE
     bool getCompressed(size_t level = 0) const;
     size_t getCompressedImageSize(size_t level = 0) const;

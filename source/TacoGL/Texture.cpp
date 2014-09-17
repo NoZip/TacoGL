@@ -146,6 +146,17 @@ Texture::~Texture()
   glDeleteTextures(1, &m_id);
 }
 
+bool Texture::isBinded() const
+{
+  return getUnitManager().isBinded(m_id);
+}
+
+GLenum Texture::getTarget() const
+{
+  assert(isBinded());
+  return getUnitManager().getTargetBinding(m_id);
+}
+
 //-----------------//
 // Texture Binding //
 //-----------------//
@@ -170,6 +181,12 @@ void Texture::unbindAll()
   getUnitManager().unbindAll();
 }
 
+void Texture::getData(size_t level, GLenum format, GLenum type, void *img) const
+{
+  assert(isBinded());
+  glGetTexImage(getTarget(), level, format, type, img);
+}
+
 void Texture::setData(
   size_t level,
   gl::GLenum format,
@@ -179,8 +196,9 @@ void Texture::setData(
   void *data
 )
 {
+  assert(isBinded());
   glTexImage1D(
-    getUnitManager().getTargetBinding(m_id),
+    getTarget(),
     level,
     static_cast<GLint>(internalFormat),
     size,
@@ -200,8 +218,9 @@ void Texture::setData(
   void *data
 )
 {
+  assert(isBinded());
   glTexImage2D(
-    getUnitManager().getTargetBinding(m_id),
+    getTarget(),
     level,
     static_cast<GLint>(internalFormat),
     width, height,
@@ -221,8 +240,9 @@ void Texture::setData(
   void *data
 )
 {
+  assert(isBinded());
   glTexImage3D(
-    getUnitManager().getTargetBinding(m_id),
+    getTarget(),
     level,
     static_cast<GLint>(internalFormat),
     width, height, depth,
@@ -235,11 +255,14 @@ void Texture::setData(
 
 void Texture::generateMipmaps()
 {
-  glGenerateMipmap(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  glGenerateMipmap(getTarget());
 }
 
 void Texture::load(const char *filename)
 {
+  assert(isBinded());
+
   Vector2i size;
   int channels;
   unsigned char *data = SOIL_load_image(filename, &(size[0]), &(size[1]), &channels, SOIL_LOAD_RGB);
@@ -344,12 +367,14 @@ namespace
 
 size_t Texture::getBaseLevel() const
 {
-  return getParameter<GL_TEXTURE_BASE_LEVEL, GLuint>(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_BASE_LEVEL, GLuint>(getTarget());
 }
 
 size_t Texture::getMaxLevel() const
 {
-  return getParameter<GL_TEXTURE_MAX_LEVEL, GLuint>(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_MAX_LEVEL, GLuint>(getTarget());
 }
 
 // TODO: TEXTURE_SWIZZLE
@@ -358,12 +383,14 @@ size_t Texture::getMaxLevel() const
 
 void Texture::setBaseLevel(size_t value)
 {
-  setParameter<GL_TEXTURE_BASE_LEVEL, GLuint>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameter<GL_TEXTURE_BASE_LEVEL, GLuint>(getTarget(), value);
 }
 
 void Texture::setMaxLevel(size_t value)
 {
-  setParameter<GL_TEXTURE_MAX_LEVEL, GLuint>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameter<GL_TEXTURE_MAX_LEVEL, GLuint>(getTarget(), value);
 }
 
 // TODO: TEXTURE_SWIZZLE
@@ -374,69 +401,82 @@ void Texture::setMaxLevel(size_t value)
 
 GLenum Texture::getMagFilter() const
 {
-  return getParameter<GL_TEXTURE_MAG_FILTER, GLenum>(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_MAG_FILTER, GLenum>(getTarget());
 }
 
 GLenum Texture::getMinFilter() const
 {
-  return getParameter<GL_TEXTURE_MIN_FILTER, GLenum>(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_MIN_FILTER, GLenum>(getTarget());
 }
 
 size_t Texture::getMinLOD() const
 {
-  return getParameter<GL_TEXTURE_MIN_LOD, GLuint>(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_MIN_LOD, GLuint>(getTarget());
 }
 
 size_t Texture::getMaxLOD() const
 {
-  return getParameter<GL_TEXTURE_MAX_LOD, GLuint>(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_MAX_LOD, GLuint>(getTarget());
 }
 
 // TODO:TEXTURE_WRAP, Vector or scalar ?
 
-Vector4 Texture::getBorderColor() const {
-  return getParameterv<GL_TEXTURE_BORDER_COLOR, Vector4>(getUnitManager().getTargetBinding(m_id));
+Vector4 Texture::getBorderColor() const
+{
+  assert(isBinded());
+  return getParameterv<GL_TEXTURE_BORDER_COLOR, Vector4>(getTarget());
 }
 
 // TODO: TEXTURE_COMPARE_MODE
 
 GLenum Texture::getCompareFunction() const
 {
-  return getParameter<GL_TEXTURE_COMPARE_FUNC, GLenum>(getUnitManager().getTargetBinding(m_id));
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_COMPARE_FUNC, GLenum>(getTarget());
 }
 
 void Texture::setMagFilter(GLenum value)
 {
-  setParameter<GL_TEXTURE_MAG_FILTER, GLenum>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameter<GL_TEXTURE_MAG_FILTER, GLenum>(getTarget(), value);
 }
 
 void Texture::setMinFilter(GLenum value)
 {
-  setParameter<GL_TEXTURE_MIN_FILTER, GLenum>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameter<GL_TEXTURE_MIN_FILTER, GLenum>(getTarget(), value);
 }
 
 void Texture::setMinLOD(size_t value)
 {
-  setParameter<GL_TEXTURE_MIN_LOD, GLuint>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameter<GL_TEXTURE_MIN_LOD, GLuint>(getTarget(), value);
 }
 
 void Texture::setMaxLOD(size_t value)
 {
-  setParameter<GL_TEXTURE_MAX_LOD, GLuint>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameter<GL_TEXTURE_MAX_LOD, GLuint>(getTarget(), value);
 }
 
 // TODO:TEXTURE_WRAP, Vector or scalar ?
 
 void Texture::setBorderColor(const Vector4 &value)
 {
-  setParameterv<GL_TEXTURE_BORDER_COLOR, Vector4>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameterv<GL_TEXTURE_BORDER_COLOR, Vector4>(getTarget(), value);
 }
 
 // TODO: TEXTURE_COMPARE_MODE
 
 void Texture::setCompareFunction(GLenum value)
 {
-  setParameter<GL_TEXTURE_COMPARE_FUNC, GLenum>(getUnitManager().getTargetBinding(m_id), value);
+  assert(isBinded());
+  setParameter<GL_TEXTURE_COMPARE_FUNC, GLenum>(getTarget(), value);
 }
 
 //==========================//
@@ -479,7 +519,7 @@ namespace
     GLenum target,
     size_t level,
     GLenum parameter,
-    GLuint *value
+    GLenum *value
   )
   {
     GLint uvalue;
@@ -489,7 +529,7 @@ namespace
       parameter,
       &uvalue
     );
-    *value = uvalue;
+    *value = static_cast<GLenum>(uvalue);
   }
 
   template <GLenum PARAMETER, typename T>
@@ -503,51 +543,64 @@ namespace
 
 size_t Texture::getWidth(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_WIDTH, GLuint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_WIDTH, GLint>(getTarget(), level);
 }
 
 size_t Texture::getHeight(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_HEIGHT, GLuint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_HEIGHT, GLint>(getTarget(), level);
 }
 
 size_t Texture::getDepth(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_DEPTH, GLuint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_DEPTH, GLint>(getTarget(), level);
 }
 
 size_t Texture::getSamples(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_SAMPLES, GLuint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_SAMPLES, GLint>(getTarget(), level);
 }
 
 bool Texture::getFixedSampleLocations(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_FIXED_SAMPLE_LOCATIONS, GLint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_FIXED_SAMPLE_LOCATIONS, GLint>(getTarget(), level);
 }
 
-// TODO: GL_TEXTURE_INTERNAL_FORMAT
+gl::GLenum Texture::getInternalFormat(size_t level) const
+{
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_INTERNAL_FORMAT, GLenum>(getTarget(), level);
+}
 
 // TODO: GL_TEXTURE_SHARED_SIZE
 
 bool Texture::getCompressed(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_COMPRESSED, GLint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_COMPRESSED, GLint>(getTarget(), level);
 }
 
 size_t Texture::getCompressedImageSize(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_COMPRESSED_IMAGE_SIZE, GLuint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_COMPRESSED_IMAGE_SIZE, GLint>(getTarget(), level);
 }
 
 // TODO: GL_TEXTURE_BUFFER_DATA_STORE_BINDING
 
 int Texture::getBufferOffset(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_BUFFER_OFFSET, GLuint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_BUFFER_OFFSET, GLint>(getTarget(), level);
 }
 
 size_t Texture::getBufferSize(size_t level) const
 {
-  return getLevelParameter<GL_TEXTURE_BUFFER_SIZE, GLuint>(getUnitManager().getTargetBinding(m_id), level);
+  assert(isBinded());
+  return getLevelParameter<GL_TEXTURE_BUFFER_SIZE, GLint>(getTarget(), level);
 }
