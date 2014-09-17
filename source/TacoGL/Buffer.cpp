@@ -34,14 +34,25 @@ Buffer::Manager::getBinding() const
   return m_binding;
 }
 
+bool Buffer::Manager::isAvaible(gl::GLenum target) const
+{
+  return m_target.find(target) == m_target.end();
+}
+
+bool Buffer::Manager::isBinded(GLuint bufferId) const
+{
+  return m_binding.find(bufferId) != m_binding.end();
+}
+
 GLenum Buffer::Manager::getBinding(GLuint bufferId) const
 {
+  assert(isBinded(bufferId));
   return m_binding.at(bufferId);
 }
 
 void Buffer::Manager::bind(GLenum target, GLuint bufferId)
 {
-  assert(m_target.find(target) == m_target.end());
+  assert(isAvaible(target));
 
   glBindBuffer(target, bufferId);
 
@@ -51,9 +62,9 @@ void Buffer::Manager::bind(GLenum target, GLuint bufferId)
 
 void Buffer::Manager::unbind(GLuint bufferId)
 {
-  GLenum target = m_binding.at(bufferId);
+  assert(isBinded(bufferId));
 
-  assert(m_target.find(target) != m_target.end());
+  GLenum target = m_binding.at(bufferId);
 
   glBindBuffer(target, 0);
 
@@ -92,6 +103,17 @@ Buffer::~Buffer()
 size_t Buffer::getSize() const
 {
   return m_size;
+}
+
+bool Buffer::isBinded() const
+{
+  return s_manager.isBinded(m_id);
+}
+
+gl::GLenum Buffer::getTarget() const
+{
+  assert(isBinded());
+  return s_manager.getBinding(m_id);
 }
 
 void Buffer::bind(gl::GLenum target)

@@ -2,7 +2,9 @@
 template <typename T>
 void Buffer::allocate(size_t size, gl::GLenum usage, const T* data)
 {
-  gl::GLenum target = s_manager.getBinding(m_id);
+  assert(isBinded());
+
+  gl::GLenum target = getTarget();
   m_size = size * sizeof(T);
 
   gl::glBufferData(
@@ -16,7 +18,9 @@ void Buffer::allocate(size_t size, gl::GLenum usage, const T* data)
 template <typename T>
 void Buffer::allocate(size_t size, gl::MapBufferUsageMask flags, const T* data)
 {
-  gl::GLenum target = s_manager.getBinding(m_id);
+  assert(isBinded());
+
+  gl::GLenum target = getTarget();
   m_size = size * sizeof(T);
 
   gl::glBufferStorage(
@@ -30,6 +34,8 @@ void Buffer::allocate(size_t size, gl::MapBufferUsageMask flags, const T* data)
 template <typename InputIterator>
 void Buffer::set(const InputIterator first)
 {
+  assert(isBinded());
+
   using value_t = typename std::iterator_traits<InputIterator>::value_type;
 
   size_t count = m_size / sizeof(value_t);
@@ -39,7 +45,7 @@ void Buffer::set(const InputIterator first)
   std::copy_n(first, count, array.begin());
 
   glBufferSubData(
-    s_manager.getBinding(m_id),
+    getTarget(),
     0,
     m_size,
     static_cast<const void*>(array.data())
@@ -49,6 +55,8 @@ void Buffer::set(const InputIterator first)
 template <typename InputIterator>
 void Buffer::set(const InputIterator first, size_t count, size_t offset)
 {
+  assert(isBinded());
+
   using value_t = typename std::iterator_traits<InputIterator>::value_type;
 
   size_t size = count * sizeof(value_t);
@@ -59,7 +67,7 @@ void Buffer::set(const InputIterator first, size_t count, size_t offset)
   std::copy_n(first, count, array.begin());
 
   glBufferSubData(
-    s_manager.getBinding(m_id),
+    getTarget(),
     offset,
     size,
     static_cast<const void*>(array.data())
@@ -69,6 +77,8 @@ void Buffer::set(const InputIterator first, size_t count, size_t offset)
 template <typename OutputIterator>
 void Buffer::get(OutputIterator first) const
 {
+  assert(isBinded());
+
   using value_t = typename std::iterator_traits<OutputIterator>::value_type;
 
   size_t count = m_size / sizeof(value_t);
@@ -76,7 +86,7 @@ void Buffer::get(OutputIterator first) const
   std::vector<value_t> array(count);
 
   glGetBufferSubData(
-    s_manager.getBinding(m_id),
+    getTarget(),
     0,
     m_size,
     static_cast<void *>(array.data())
@@ -88,6 +98,8 @@ void Buffer::get(OutputIterator first) const
 template <typename OutputIterator>
 void Buffer::get(OutputIterator first, size_t count, size_t offset) const
 {
+  assert(isBinded());
+
   using value_t = typename std::iterator_traits<OutputIterator>::value_type;
 
   size_t size = count * sizeof(value_t);
@@ -96,7 +108,7 @@ void Buffer::get(OutputIterator first, size_t count, size_t offset) const
   std::vector<value_t> array(count);
 
   glGetBufferSubData(
-    s_manager.getBinding(m_id),
+    getTarget(),
     offset,
     size,
     static_cast<void *>(array.data())

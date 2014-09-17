@@ -36,6 +36,8 @@ namespace TacoGL
 
       const BindedTargetMap & getTarget() const;
       const BindingMap & getBinding() const;
+      bool isAvaible(gl::GLenum target) const;
+      bool isBinded(gl::GLuint bufferId) const;
       gl::GLenum getBinding(gl::GLuint bufferId) const;
 
       void bind(gl::GLenum target, gl::GLuint bufferId);
@@ -54,6 +56,8 @@ namespace TacoGL
     virtual ~Buffer();
 
     size_t getSize() const;
+    bool isBinded() const;
+    gl::GLenum getTarget() const;
 
     /**
      * Binds the buffer in the current OpenGl context.
