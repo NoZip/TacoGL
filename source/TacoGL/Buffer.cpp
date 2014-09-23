@@ -12,45 +12,45 @@ using namespace gl;
 using namespace glbinding;
 using namespace TacoGL;
 
-Buffer::Manager::Manager()
+BufferManager::BufferManager()
 {
 
 }
 
-Buffer::Manager::~Manager()
+BufferManager::~BufferManager()
 {
 
 }
 
-const typename Buffer::Manager::BindedTargetMap &
-Buffer::Manager::getTarget() const
+const typename BufferManager::BindedTargetMap &
+BufferManager::getTarget() const
 {
   return m_target;
 }
 
-const typename Buffer::Manager::BindingMap &
-Buffer::Manager::getBinding() const
+const typename BufferManager::BindingMap &
+BufferManager::getBinding() const
 {
   return m_binding;
 }
 
-bool Buffer::Manager::isAvaible(gl::GLenum target) const
+bool BufferManager::isAvaible(gl::GLenum target) const
 {
   return m_target.find(target) == m_target.end();
 }
 
-bool Buffer::Manager::isBinded(GLuint bufferId) const
+bool BufferManager::isBinded(GLuint bufferId) const
 {
   return m_binding.find(bufferId) != m_binding.end();
 }
 
-GLenum Buffer::Manager::getBinding(GLuint bufferId) const
+GLenum BufferManager::getBinding(GLuint bufferId) const
 {
   assert(isBinded(bufferId));
   return m_binding.at(bufferId);
 }
 
-void Buffer::Manager::bind(GLenum target, GLuint bufferId)
+void BufferManager::bind(GLenum target, GLuint bufferId)
 {
   assert(isAvaible(target));
 
@@ -60,7 +60,7 @@ void Buffer::Manager::bind(GLenum target, GLuint bufferId)
   m_binding.emplace(bufferId, target);
 }
 
-void Buffer::Manager::unbind(GLuint bufferId)
+void BufferManager::unbind(GLuint bufferId)
 {
   assert(isBinded(bufferId));
 
@@ -72,7 +72,7 @@ void Buffer::Manager::unbind(GLuint bufferId)
   m_binding.erase(bufferId);
 }
 
-void Buffer::Manager::debug() const
+void BufferManager::debug() const
 {
   std::cout << "DEBUG: buffer target map" << std::endl;
 
@@ -87,7 +87,7 @@ void Buffer::Manager::debug() const
   }
 }
 
-Buffer::Manager Buffer::s_manager;
+BufferManager Buffer::s_manager;
 
 Buffer::Buffer()
 : m_size(0)

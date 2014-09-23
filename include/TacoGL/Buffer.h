@@ -15,44 +15,42 @@ namespace TacoGL
 {
 
   /**
+   * Manages buffer bindings.
+   */
+  class BufferManager
+  {
+  public:
+    using BindedTargetMap = std::unordered_set<gl::GLenum>;
+    using BindingMap = std::unordered_map<gl::GLuint, gl::GLenum>;
+
+    BufferManager();
+
+    virtual ~BufferManager();
+
+    const BindedTargetMap & getTarget() const;
+    const BindingMap & getBinding() const;
+    bool isAvaible(gl::GLenum target) const;
+    bool isBinded(gl::GLuint bufferId) const;
+    gl::GLenum getBinding(gl::GLuint bufferId) const;
+
+    void bind(gl::GLenum target, gl::GLuint bufferId);
+
+    void unbind(gl::GLuint bufferId);
+    
+    void debug() const;
+
+  protected:
+    BindedTargetMap m_target;
+    BindingMap m_binding;
+  };
+
+  /**
    * This class is designed to use GPU memory OpenGL buffers.
    */
   class Buffer : public Object
   {
   public:
-
-    /**
-     * Manages buffer bindings.
-     */
-    class Manager
-    {
-    public:
-      using BindedTargetMap = std::unordered_set<gl::GLenum>;
-      using BindingMap = std::unordered_map<gl::GLuint, gl::GLenum>;
-
-      Manager();
-
-      virtual ~Manager();
-
-      const BindedTargetMap & getTarget() const;
-      const BindingMap & getBinding() const;
-      bool isAvaible(gl::GLenum target) const;
-      bool isBinded(gl::GLuint bufferId) const;
-      gl::GLenum getBinding(gl::GLuint bufferId) const;
-
-      void bind(gl::GLenum target, gl::GLuint bufferId);
-
-      void unbind(gl::GLuint bufferId);
-      
-      void debug() const;
-
-    protected:
-      BindedTargetMap m_target;
-      BindingMap m_binding;
-    };
-
     Buffer();
-
     virtual ~Buffer();
 
     size_t getSize() const;
@@ -138,7 +136,7 @@ namespace TacoGL
     void get(OutputIterator first, size_t count, size_t offset) const;
 
   protected:
-    static Manager s_manager; ///< buffer bindings manager.
+    static BufferManager s_manager; ///< buffer bindings manager.
 
     size_t m_size; ///< the buffer size in memory.
   };
