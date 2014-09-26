@@ -6,6 +6,7 @@ project (TacoGL)
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glbinding REQUIRED)
+find_package(Eigen3 REQUIRED)
 # find_package(glfw REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 
@@ -14,7 +15,8 @@ set(CMAKE_CXX_FLAGS  "-std=c++11")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source/")
 
-include_directories(BEFORE ${INCLUDE_DIR})
+include_directories(${EIGEN3_INCLUDE_DIR})
+include_directories(${INCLUDE_DIR})
 
 set(TACOGL_INC_DIR "${INCLUDE_DIR}/TacoGL/")
 file(GLOB TACOGL_INCS "${TACOGL_INC_DIR}/*.h" "${TACOGL_INC_DIR}/*.hpp")

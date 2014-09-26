@@ -64,7 +64,7 @@ namespace TacoGL
   T getv()
   {
     T vector;
-    auto it = std::begin(vector);
+    auto it = vector.data();
     for (int i = 0; i < vector.size(); ++i)
     {
       _get(PARAMETER, i, it++);
