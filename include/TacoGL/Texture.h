@@ -12,53 +12,53 @@
 
 namespace TacoGL
 {
+  /**
+   * Manages OpenGL texture bindings.
+   */
+  class TextureUnitManager
+  {
+  public:
+    using UsageMask = std::vector<bool>;
+    using BindingPair = std::pair<size_t, gl::GLenum>;
+    using BindingMap = std::unordered_map<gl::GLuint, BindingPair>;
+
+    TextureUnitManager();
+    virtual ~TextureUnitManager();
+
+    bool isAvaible(size_t unit) const;
+    bool isBinded(gl::GLuint textureId) const;
+    size_t getUnitBinding(gl::GLuint textureId) const;
+    gl::GLenum getTargetBinding(gl::GLuint textureId) const;
+
+    /**
+     * Bind a Texture to an OpenGL unit texture.
+     * @param texture The texture to bind.
+     * @param unit    The unit where to bind the Texture.
+     */
+    void bind(size_t unit, gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
+
+    /**
+     * Bind a texture to the first avaible unit texture.
+     * @param texture the texture to bind.
+     */
+    size_t bind(gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
+
+    /**
+     * Unbind a texture.
+     * @param texture The texture to unbind.
+     */
+    void unbind(gl::GLuint textureId);
+
+    void unbindAll();
+
+  protected:
+    UsageMask m_unitUsage;
+    BindingMap m_unitBinding;
+  };
 
   class Texture : public Object
   {
   public:
-    /**
-     * Manages OpenGL texture bindings.
-     */
-    class UnitManager
-    {
-    public:
-      using UsageMask = std::vector<bool>;
-      using BindingPair = std::pair<size_t, gl::GLenum>;
-      using BindingMap = std::unordered_map<gl::GLuint, BindingPair>;
-
-      UnitManager();
-      virtual ~UnitManager();
-
-      bool isAvaible(size_t unit) const;
-      bool isBinded(gl::GLuint textureId) const;
-      size_t getUnitBinding(gl::GLuint textureId) const;
-      gl::GLenum getTargetBinding(gl::GLuint textureId) const;
-
-      /**
-       * Bind a Texture to an OpenGL unit texture.
-       * @param texture The texture to bind.
-       * @param unit    The unit where to bind the Texture.
-       */
-      void bind(size_t unit, gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
-
-      /**
-       * Bind a texture to the first avaible unit texture.
-       * @param texture the texture to bind.
-       */
-      size_t bind(gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
-
-      /**
-       * Unbind a texture.
-       * @param texture The texture to unbind.
-       */
-      void unbind(gl::GLuint textureId);
-
-      void unbindAll();
-
-    protected:
-      UsageMask m_unitUsage;
-      BindingMap m_unitBinding;
-    };
 
     /**
      * Retrieve the number of texture units.
@@ -76,7 +76,7 @@ namespace TacoGL
      */
     static void setActiveTextureUnit(size_t unit);
 
-    static UnitManager& getUnitManager();
+    static TextureUnitManager& getUnitManager();
 
     Texture();
     virtual ~Texture();
@@ -232,7 +232,7 @@ namespace TacoGL
     size_t getBufferSize(size_t level = 0) const;
 
   protected:
-    static UnitManager *s_manager;
+    static TextureUnitManager *s_manager;
 
     Sampler *m_sampler;
   };

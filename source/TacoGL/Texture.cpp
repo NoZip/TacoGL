@@ -14,38 +14,38 @@ using namespace TacoGL;
 // Unit Manager //
 //==============//
 
-Texture::UnitManager::UnitManager()
+TextureUnitManager::TextureUnitManager()
 : m_unitUsage(Texture::getTextureUnitCount(), true), m_unitBinding()
 {
   
 }
 
-Texture::UnitManager::~UnitManager()
+TextureUnitManager::~TextureUnitManager()
 {
 
 }
 
-bool Texture::UnitManager::isAvaible(size_t unit) const
+bool TextureUnitManager::isAvaible(size_t unit) const
 {
   return m_unitUsage.at(unit);
 }
 
-bool Texture::UnitManager::isBinded(gl::GLuint textureId) const
+bool TextureUnitManager::isBinded(gl::GLuint textureId) const
 {
   return (m_unitBinding.find(textureId) != m_unitBinding.end());
 }
 
-size_t Texture::UnitManager::getUnitBinding(gl::GLuint textureId) const
+size_t TextureUnitManager::getUnitBinding(gl::GLuint textureId) const
 {
   return m_unitBinding.at(textureId).first;
 }
 
-gl::GLenum Texture::UnitManager::getTargetBinding(gl::GLuint textureId) const
+gl::GLenum TextureUnitManager::getTargetBinding(gl::GLuint textureId) const
 {
   return m_unitBinding.at(textureId).second;
 }
 
-void Texture::UnitManager::bind(size_t unit, GLenum target, GLuint textureId, GLuint samplerId)
+void TextureUnitManager::bind(size_t unit, GLenum target, GLuint textureId, GLuint samplerId)
 {
   if (isBinded(textureId))
   {
@@ -70,7 +70,7 @@ void Texture::UnitManager::bind(size_t unit, GLenum target, GLuint textureId, GL
   m_unitBinding.emplace(textureId, BindingPair{unit, target});
 }
 
-size_t Texture::UnitManager::bind(GLenum target, GLuint textureId, GLuint samplerId)
+size_t TextureUnitManager::bind(GLenum target, GLuint textureId, GLuint samplerId)
 {
   auto firstAvaible = std::find(m_unitUsage.begin(), m_unitUsage.end(), true);
 
@@ -81,7 +81,7 @@ size_t Texture::UnitManager::bind(GLenum target, GLuint textureId, GLuint sample
   return unit;
 }
 
-void Texture::UnitManager::unbind(GLuint textureId)
+void TextureUnitManager::unbind(GLuint textureId)
 {
   assert(isBinded(textureId));
 
@@ -99,7 +99,7 @@ void Texture::UnitManager::unbind(GLuint textureId)
   m_unitBinding.erase(textureId);
 }
 
-void Texture::UnitManager::unbindAll()
+void TextureUnitManager::unbindAll()
 {
   std::fill(m_unitUsage.begin(), m_unitUsage.end(), true);
   m_unitBinding.clear();
@@ -126,12 +126,12 @@ void Texture::setActiveTextureUnit(size_t unit)
   glActiveTexture(GL_TEXTURE0 + unit);
 }
 
-Texture::UnitManager *Texture::s_manager = nullptr;
+TextureUnitManager *Texture::s_manager = nullptr;
 
-Texture::UnitManager & Texture::getUnitManager()
+TextureUnitManager & Texture::getUnitManager()
 {
   if (!s_manager)
-    s_manager = new UnitManager();
+    s_manager = new TextureUnitManager();
 
   return *s_manager;
 }
