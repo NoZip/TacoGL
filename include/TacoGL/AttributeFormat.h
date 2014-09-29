@@ -34,23 +34,30 @@ namespace TacoGL
     size_t m_offset;
   };
 
-  template <gl::GLenum Type>
-  class AttributeFormat : public AbstractAttributeFormat
+  template <gl::GLenum Type, typename T>
+  class AttributeFormat;
+
+  namespace
   {
+    template <typename T>
+    inline gl::GLenum _type();
 
-  };
+    template <>
+    inline gl::GLenum _type<gl::GLfloat>()
+    {
+      return gl::GL_FLOAT;
+    }
+  }
 
-  template <>
-  class AttributeFormat<gl::GL_FLOAT> : public AbstractAttributeFormat
+  template <typename T>
+  class AttributeFormat<gl::GL_FLOAT, T> : public AbstractAttributeFormat
   {
   public:
     AttributeFormat(
-      size_t size,
-      gl::GLenum type,
       size_t offset,
       bool normalized = false
     )
-    : AbstractAttributeFormat(size, type, offset), m_normalized(normalized)
+    : AbstractAttributeFormat(T::RowsAtCompileTime, _type<typename T::Scalar>(), offset), m_normalized(normalized)
     {
 
     }
@@ -86,10 +93,10 @@ public:
 
     const AttributeMap & getAttributes() const { return m_attributes; }
 
-    template <gl::GLenum Type>
-    void add(const std::string &name, const AttributeFormat<Type> &format)
+    template <gl::GLenum Type, typename T>
+    void add(const std::string &name, const AttributeFormat<Type, T> &format)
     {
-      m_attributes.emplace(name, new AttributeFormat<Type>(format));
+      m_attributes.emplace(name, new AttributeFormat<Type, T>(format));
     }
 
     void init(const Program &program, Buffer &buffer);
