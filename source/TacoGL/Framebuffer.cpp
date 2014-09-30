@@ -1,3 +1,4 @@
+#include <cassert>
 
 #include <TacoGL/Framebuffer.h>
 
@@ -8,33 +9,33 @@ using namespace TacoGL;
 // Manager //
 //=========//
 
-Framebuffer::Manager::Manager()
+FramebufferManager::FramebufferManager()
 {
 
 }
 
-Framebuffer::Manager::~Manager()
+FramebufferManager::~FramebufferManager()
 {
 
 }
 
-bool Framebuffer::Manager::isAvaible(GLenum target) const
+bool FramebufferManager::isAvaible(GLenum target) const
 {
   return m_target.find(target) == m_target.end();
 }
 
-bool Framebuffer::Manager::isBinded(GLuint framebufferId) const
+bool FramebufferManager::isBinded(GLuint framebufferId) const
 {
   return m_binding.find(framebufferId) != m_binding.end();
 }
 
-GLenum Framebuffer::Manager::getTarget(GLuint framebufferId) const
+GLenum FramebufferManager::getTarget(GLuint framebufferId) const
 {
   assert(isBinded(framebufferId));
   return m_binding.at(framebufferId);
 }
 
-void Framebuffer::Manager::bind(GLenum target, GLuint framebufferId)
+void FramebufferManager::bind(GLenum target, GLuint framebufferId)
 {
   assert(isAvaible(target));
 
@@ -44,7 +45,7 @@ void Framebuffer::Manager::bind(GLenum target, GLuint framebufferId)
   m_binding.emplace(framebufferId, target);
 }
 
-void Framebuffer::Manager::unbind(GLuint framebufferId)
+void FramebufferManager::unbind(GLuint framebufferId)
 {
   assert(isBinded(framebufferId));
 
@@ -100,6 +101,23 @@ void Framebuffer::attachTexture(
   glFramebufferTexture(getTarget(), attachment​, texture.getId(), level);
 }
 
+void Framebuffer::attachTexture(
+  GLenum attachment,
+  GLenum textarget,
+  const Texture &texture,
+  size_t level
+)
+{
+  assert(isBinded());
+  glFramebufferTexture2D(
+    getTarget(),
+    attachment,
+    textarget,
+    texture.getId(),
+    level
+  );
+}
+
 void Framebuffer::attachTextureLayer(
   GLenum attachment​,
   const Texture &texture,
@@ -108,18 +126,13 @@ void Framebuffer::attachTextureLayer(
 )
 {
   assert(isBinded());
-  glFramebufferTextureLayer(getTarget(), attachment​, texture.getId(), level, layer);
-}
-
-void Framebuffer::attachTexture2D(
-  GLenum attachment,
-  GLenum textarget,
-  const Texture &texture,
-  size_t level
-)
-{
-  assert(isBinded());
-  glFramebufferTexture2D(getTarget(), attachment, textarget, texture.getId(), level);
+  glFramebufferTextureLayer(
+    getTarget(),
+    attachment​,
+    texture.getId(),
+    level,
+    layer
+  );
 }
 
 void Framebuffer::attachRenderbuffer(
@@ -127,5 +140,10 @@ void Framebuffer::attachRenderbuffer(
   const Renderbuffer &renderbuffer
 )
 {
-  glFramebufferRenderbuffer(getTarget(), attachment, GL_RENDERBUFFER, renderbuffer.getId());
+  glFramebufferRenderbuffer(
+    getTarget(),
+    attachment,
+    GL_RENDERBUFFER,
+    renderbuffer.getId()
+  );
 }
