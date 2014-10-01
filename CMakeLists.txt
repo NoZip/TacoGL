@@ -28,6 +28,7 @@ file(GLOB TACOGL_CAPABILITIES_INCS
 set(TACOGL_SRC_DIR "${SOURCE_DIR}/TacoGL/")
 set(TACOGL_SRCS
     "${TACOGL_SRC_DIR}/Error.cpp"
+    "${TACOGL_SRC_DIR}/ExtensionRegister.cpp"
     "${TACOGL_SRC_DIR}/Buffer.cpp"
     "${TACOGL_SRC_DIR}/Texture.cpp"
     "${TACOGL_SRC_DIR}/Sampler.cpp"
