@@ -184,13 +184,20 @@ namespace TacoGL
     // gl::GLenum getDepthStencilMode() const;
     size_t getBaseLevel() const;
     size_t getMaxLevel() const;
-    // TODO: TEXTURE_SWIZZLE
+    gl::GLenum getSwizzleR() const;
+    gl::GLenum getSwizzleG() const;
+    gl::GLenum getSwizzleB() const;
+    gl::GLenum getSwizzleA() const;
 
     // TODO: DEPTH_STENCIL_TEXTURE_MODE
     // void setDepthStencilMode(gl::GLenum value);
     void setBaseLevel(size_t value);
     void setMaxLevel(size_t value);
-    // TODO: TEXTURE_SWIZZLE
+    void setSwizzleR(gl::GLenum value);
+    void setSwizzleG(gl::GLenum value);
+    void setSwizzleB(gl::GLenum value);
+    void setSwizzleA(gl::GLenum value);
+    // TODO: swizzle RGBA
 
     //---------------------//
     // Sampling Parameters //
@@ -200,7 +207,9 @@ namespace TacoGL
     gl::GLenum getMinFilter() const;
     size_t getMinLOD() const;
     size_t getMaxLOD() const;
-    // TODO:TEXTURE_WRAP, Vector or scalar ?
+    gl::GLenum getWrapS() const;
+    gl::GLenum getWrapT() const;
+    gl::GLenum getWrapR() const;
     Vector4 getBorderColor() const;
     // TODO: TEXTURE_COMPARE_MODE
     gl::GLenum getCompareFunction() const;
@@ -209,7 +218,12 @@ namespace TacoGL
     void setMinFilter(gl::GLenum value);
     void setMinLOD(size_t value);
     void setMaxLOD(size_t value);
-    // TODO:TEXTURE_WRAP, Vector or scalar ?
+    void setWrapS(gl::GLenum value);
+    void setWrapT(gl::GLenum value);
+    void setWrapR(gl::GLenum value);
+    void setWrap(gl::GLenum s);
+    void setWrap(gl::GLenum s, gl::GLenum t);
+    void setWrap(gl::GLenum s, gl::GLenum t, gl::GLenum r);
     void setBorderColor(const Vector4 &value);
     // TODO: TEXTURE_COMPARE_MODE
     void setCompareFunction(gl::GLenum value);
@@ -223,7 +237,7 @@ namespace TacoGL
     size_t getDepth(size_t level = 0) const;
     size_t getSamples(size_t level = 0) const;
     bool getFixedSampleLocations(size_t level = 0) const;
-    gl::GLenum getInternalFormat(size_t level = 0) const; // TODO: GL_TEXTURE_INTERNAL_FORMAT
+    gl::GLenum getInternalFormat(size_t level = 0) const;
     // TODO: GL_TEXTURE_SHARED_SIZE
     bool getCompressed(size_t level = 0) const;
     size_t getCompressedImageSize(size_t level = 0) const;

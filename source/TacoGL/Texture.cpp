@@ -377,7 +377,29 @@ size_t Texture::getMaxLevel() const
   return getParameter<GL_TEXTURE_MAX_LEVEL, GLuint>(getTarget());
 }
 
-// TODO: TEXTURE_SWIZZLE
+GLenum Texture::getSwizzleR() const
+{
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_SWIZZLE_R, GLenum>(getTarget());
+}
+
+GLenum Texture::getSwizzleG() const
+{
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_SWIZZLE_G, GLenum>(getTarget());
+}
+
+GLenum Texture::getSwizzleB() const
+{
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_SWIZZLE_B, GLenum>(getTarget());
+}
+
+GLenum Texture::getSwizzleA() const
+{
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_SWIZZLE_A, GLenum>(getTarget());
+}
 
 // TODO: DEPTH_STENCIL_TEXTURE_MODE
 
@@ -393,7 +415,29 @@ void Texture::setMaxLevel(size_t value)
   setParameter<GL_TEXTURE_MAX_LEVEL, GLuint>(getTarget(), value);
 }
 
-// TODO: TEXTURE_SWIZZLE
+void Texture::setSwizzleR(GLenum value)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_SWIZZLE_R, GLenum>(getTarget(), value);
+}
+
+void Texture::setSwizzleG(GLenum value)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_SWIZZLE_G, GLenum>(getTarget(), value);
+}
+
+void Texture::setSwizzleB(GLenum value)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_SWIZZLE_B, GLenum>(getTarget(), value);
+}
+
+void Texture::setSwizzleA(GLenum value)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_SWIZZLE_A, GLenum>(getTarget(), value);
+}
 
 //---------------------------//
 // Sampler Linked Parameters //
@@ -423,7 +467,23 @@ size_t Texture::getMaxLOD() const
   return getParameter<GL_TEXTURE_MAX_LOD, GLuint>(getTarget());
 }
 
-// TODO:TEXTURE_WRAP, Vector or scalar ?
+GLenum Texture::getWrapS() const
+{
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_WRAP_S, GLenum>(getTarget());
+}
+
+GLenum Texture::getWrapT() const
+{
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_WRAP_T, GLenum>(getTarget());
+}
+
+GLenum Texture::getWrapR() const
+{
+  assert(isBinded());
+  return getParameter<GL_TEXTURE_WRAP_R, GLenum>(getTarget());
+}
 
 Vector4 Texture::getBorderColor() const
 {
@@ -463,7 +523,44 @@ void Texture::setMaxLOD(size_t value)
   setParameter<GL_TEXTURE_MAX_LOD, GLuint>(getTarget(), value);
 }
 
-// TODO:TEXTURE_WRAP, Vector or scalar ?
+void Texture::setWrapS(GLenum value)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_WRAP_S, GLenum>(getTarget(), value);
+}
+
+void Texture::setWrapT(GLenum value)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_WRAP_T, GLenum>(getTarget(), value);
+}
+
+void Texture::setWrapR(GLenum value)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_WRAP_R, GLenum>(getTarget(), value);
+}
+
+void Texture::setWrap(GLenum s)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_WRAP_S, GLenum>(getTarget(), s);
+}
+
+void Texture::setWrap(GLenum s, GLenum t)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_WRAP_S, GLenum>(getTarget(), s);
+  setParameter<GL_TEXTURE_WRAP_T, GLenum>(getTarget(), t);
+}
+
+void Texture::setWrap(GLenum s, GLenum t, GLenum r)
+{
+  assert(isBinded());
+  setParameter<GL_TEXTURE_WRAP_S, GLenum>(getTarget(), s);
+  setParameter<GL_TEXTURE_WRAP_T, GLenum>(getTarget(), t);
+  setParameter<GL_TEXTURE_WRAP_R, GLenum>(getTarget(), r);
+}
 
 void Texture::setBorderColor(const Vector4 &value)
 {
