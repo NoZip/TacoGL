@@ -16,7 +16,7 @@ using namespace TacoGL;
 
 bool TextureUnitManager::isAvaible(size_t unit) const
 {
-  return (m_unitUsage.find(unit) != m_unitUsage.end());
+  return (m_unitUsage.find(unit) == m_unitUsage.end());
 }
 
 bool TextureUnitManager::isBinded(gl::GLuint textureId) const
@@ -93,7 +93,7 @@ void TextureUnitManager::unbindAll()
 
 bool ImageUnitManager::isAvaible(size_t unit) const
 {
-  return (m_unitUsage.find(unit) != m_unitUsage.end());
+  return (m_unitUsage.find(unit) == m_unitUsage.end());
 }
 
 bool ImageUnitManager::isBinded(GLuint textureId) const
@@ -186,14 +186,17 @@ void Texture::setActiveTextureUnit(size_t unit)
   glActiveTexture(GL_TEXTURE0 + unit);
 }
 
-TextureUnitManager *Texture::s_manager = nullptr;
+TextureUnitManager Texture::s_textureUnitManager;
+ImageUnitManager Texture::s_imageUnitManager;
 
-TextureUnitManager & Texture::getUnitManager()
+const TextureUnitManager& Texture::getTextureUnitManager()
 {
-  if (!s_manager)
-    s_manager = new TextureUnitManager();
+  return s_textureUnitManager;
+}
 
-  return *s_manager;
+const ImageUnitManager& Texture::getImageUnitManager()
+{
+  return s_imageUnitManager;
 }
 
 Texture::Texture() : m_sampler(nullptr)
@@ -208,13 +211,13 @@ Texture::~Texture()
 
 bool Texture::isBinded() const
 {
-  return getUnitManager().isBinded(m_id);
+  return s_textureUnitManager.isBinded(m_id);
 }
 
 GLenum Texture::getTarget() const
 {
   assert(isBinded());
-  return getUnitManager().getTargetBinding(m_id);
+  return s_textureUnitManager.getTargetBinding(m_id);
 }
 
 //-----------------//
@@ -223,22 +226,22 @@ GLenum Texture::getTarget() const
 
 void Texture::bind(size_t unit, GLenum target)
 {
-  getUnitManager().bind(unit, target, m_id, (m_sampler) ? m_sampler->getId() : 0);
+  s_textureUnitManager.bind(unit, target, m_id, (m_sampler) ? m_sampler->getId() : 0);
 }
 
 // size_t Texture::bind(GLenum target)
 // {
-//   return getUnitManager().bind(target, m_id, (m_sampler) ? m_sampler->getId() : 0);
+//   return s_textureUnitManager.bind(target, m_id, (m_sampler) ? m_sampler->getId() : 0);
 // }
 
 void Texture::unbind()
 {
-  getUnitManager().unbind(m_id);
+  s_textureUnitManager.unbind(m_id);
 }
 
 void Texture::unbindAll()
 {
-  getUnitManager().unbindAll();
+  s_textureUnitManager.unbindAll();
 }
 
 void Texture::getData(size_t level, GLenum format, GLenum type, void *img) const

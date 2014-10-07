@@ -59,6 +59,7 @@ namespace TacoGL
 
   class ImageUnitManager
   {
+  public:
     struct ImageBinding
     {
       size_t unit;
@@ -119,7 +120,8 @@ namespace TacoGL
      */
     static void setActiveTextureUnit(size_t unit);
 
-    static TextureUnitManager& getUnitManager();
+    static const TextureUnitManager& getTextureUnitManager();
+    static const ImageUnitManager& getImageUnitManager();
 
     Texture();
     virtual ~Texture();
@@ -289,7 +291,8 @@ namespace TacoGL
     size_t getBufferSize(size_t level = 0) const;
 
   protected:
-    static TextureUnitManager *s_manager;
+    static TextureUnitManager s_textureUnitManager;
+    static ImageUnitManager s_imageUnitManager;
 
     Sampler *m_sampler;
   };

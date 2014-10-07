@@ -188,7 +188,7 @@ void Program::setUniform(
 )
 {
   GLint location = getUniformLocation(name);
-  size_t unit = Texture::getUnitManager().getUnitBinding(texture.getId());
+  size_t unit = Texture::getTextureUnitManager().getUnitBinding(texture.getId());
   glProgramUniform1i(m_id, location, static_cast<GLint>(unit));
 }
 
