@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <TacoGL/OpenGL.h>
 #include <TacoGL/Error.h>
@@ -54,6 +55,48 @@ namespace TacoGL
   protected:
     UsageMask m_unitUsage;
     BindingMap m_unitBinding;
+  };
+
+  class ImageUnitManager
+  {
+    struct ImageBinding
+    {
+      size_t unit;
+      size_t level;
+      bool layered;
+      size_t layer;
+      gl::GLenum access;
+      gl::GLenum format;
+    };
+
+    using UnitUsageSet = std::unordered_set<size_t>;
+    using BindingMap = std::unordered_map<gl::GLuint, ImageBinding>;
+
+    ImageUnitManager() = default;
+    virtual ~ImageUnitManager() = default;
+
+    bool isAvaible(size_t unit) const;
+    bool isBinded(gl::GLuint textureId) const;
+    const ImageBinding& getBinding(gl::GLuint textureId) const;
+    size_t getUnitBinding(gl::GLuint textureId) const;
+
+    void bind(
+      size_t unit,
+      gl::GLuint textureId,
+      size_t level,
+      bool layered,
+      size_t layer,
+      gl::GLenum access,
+      gl::GLenum format
+    );
+
+    void unbind(gl::GLuint textureId);
+
+    void unbindAll();
+
+  protected:
+    UnitUsageSet m_unitUsage;
+    BindingMap m_binding;
   };
 
   class Texture : public Object

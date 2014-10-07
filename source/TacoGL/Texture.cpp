@@ -105,6 +105,84 @@ void TextureUnitManager::unbindAll()
   m_unitBinding.clear();
 }
 
+//====================//
+// Image Unit Manager //
+//====================//
+
+bool ImageUnitManager::isAvaible(size_t unit) const
+{
+  return (m_unitUsage.find(unit) != m_unitUsage.end());
+}
+
+bool ImageUnitManager::isBinded(GLuint textureId) const
+{
+  return (m_binding.find(textureId) != m_binding.end());
+}
+
+const typename ImageUnitManager::ImageBinding&
+ImageUnitManager::getBinding(GLuint textureId) const
+{
+  assert(isBinded(textureId));
+  return m_binding.at(textureId);
+}
+
+size_t ImageUnitManager::getUnitBinding(GLuint textureId) const
+{
+  return getBinding(textureId).unit;
+}
+
+void ImageUnitManager::bind(
+  size_t unit,
+  GLuint textureId,
+  size_t level,
+  bool layered,
+  size_t layer,
+  GLenum access,
+  GLenum format
+)
+{
+  assert(isAvaible(unit));
+  assert(!isBinded(textureId));
+
+  glBindImageTexture(
+    unit,
+    textureId,
+    level,
+    (layered) ? GL_TRUE : GL_FALSE,
+    layer,
+    access,
+    format
+  );
+
+  ImageBinding binding = ImageBinding{
+    unit,
+    level,
+    layered,
+    layer,
+    access,
+    format
+  };
+  
+  m_unitUsage.insert(unit);
+  m_binding.emplace(textureId, binding);
+}
+
+void ImageUnitManager::unbind(GLuint textureId)
+{
+  assert(isBinded(textureId));
+
+  size_t unit = getUnitBinding(textureId);
+
+  m_unitUsage.erase(unit);
+  m_binding.erase(textureId);
+}
+
+void ImageUnitManager::unbindAll()
+{
+  m_unitUsage.clear();
+  m_binding.clear();
+}
+
 //=========//
 // Texture //
 //=========//
