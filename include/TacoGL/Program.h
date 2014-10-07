@@ -37,8 +37,15 @@ namespace TacoGL
       std::string m_log;
     };
 
-    using AttributeMap = std::unordered_map<std::string, gl::GLuint>;
-    using UniformMap = std::unordered_map<std::string, gl::GLuint>;
+    struct GLSLVariable
+    {
+      gl::GLint location;
+      size_t size;
+      gl::GLenum type;
+    };
+
+    using AttributeMap = std::unordered_map<std::string, GLSLVariable>;
+    using UniformMap = std::unordered_map<std::string, GLSLVariable>;
 
     Program();
     virtual ~Program();

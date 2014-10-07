@@ -93,7 +93,7 @@ void Program::use()
 GLint Program::getAttributeLocation(const std::string &name) const
 {
   if (m_activeAttributes.find(name) != m_activeAttributes.end())
-    return m_activeAttributes.at(name);
+    return m_activeAttributes.at(name).location;
   else
     return -1;
 }
@@ -101,7 +101,7 @@ GLint Program::getAttributeLocation(const std::string &name) const
 GLint Program::getUniformLocation(const std::string &name) const
 {
   if (m_activeUniforms.find(name) != m_activeUniforms.end())
-    return m_activeUniforms.at(name);
+    return m_activeUniforms.at(name).location;
   else
     return -1;
 }
@@ -329,7 +329,7 @@ void Program::computeActiveAttributes()
       glGetActiveAttrib(m_id, i, bufferSize, nullptr, &size, &type, name);
       m_activeAttributes.emplace(
         std::string(name),
-        glGetAttribLocation(m_id, name)
+        GLSLVariable{glGetAttribLocation(m_id, name), static_cast<size_t>(size), type}
       );
   }
 
@@ -352,7 +352,7 @@ void Program::computeActiveUniforms()
       glGetActiveUniform(m_id, i, bufferSize, nullptr, &size, &type, name);
       m_activeUniforms.emplace(
         std::string(name),
-        glGetUniformLocation(m_id, name)
+        GLSLVariable{glGetUniformLocation(m_id, name), static_cast<size_t>(size), type}
       );
   }
 
