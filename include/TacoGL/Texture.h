@@ -19,12 +19,12 @@ namespace TacoGL
   class TextureUnitManager
   {
   public:
-    using UsageMask = std::vector<bool>;
+    using UnitUsageSet = std::unordered_set<size_t>;
     using BindingPair = std::pair<size_t, gl::GLenum>;
     using BindingMap = std::unordered_map<gl::GLuint, BindingPair>;
 
-    TextureUnitManager();
-    virtual ~TextureUnitManager();
+    TextureUnitManager() = default;
+    virtual ~TextureUnitManager() = default;
 
     bool isAvaible(size_t unit) const;
     bool isBinded(gl::GLuint textureId) const;
@@ -42,7 +42,7 @@ namespace TacoGL
      * Bind a texture to the first avaible unit texture.
      * @param texture the texture to bind.
      */
-    size_t bind(gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
+    // size_t bind(gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
 
     /**
      * Unbind a texture.
@@ -53,7 +53,7 @@ namespace TacoGL
     void unbindAll();
 
   protected:
-    UsageMask m_unitUsage;
+    UnitUsageSet m_unitUsage;
     BindingMap m_unitBinding;
   };
 
@@ -139,7 +139,7 @@ namespace TacoGL
     /**
      * Bind texture to the first avaible texture unit.
      */
-    size_t bind(gl::GLenum target);
+    // size_t bind(gl::GLenum target);
 
     /**
      * Unbind texture.

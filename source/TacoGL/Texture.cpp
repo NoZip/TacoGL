@@ -14,20 +14,9 @@ using namespace TacoGL;
 // Unit Manager //
 //==============//
 
-TextureUnitManager::TextureUnitManager()
-: m_unitUsage(Texture::getTextureUnitCount(), true), m_unitBinding()
-{
-  
-}
-
-TextureUnitManager::~TextureUnitManager()
-{
-
-}
-
 bool TextureUnitManager::isAvaible(size_t unit) const
 {
-  return m_unitUsage.at(unit);
+  return (m_unitUsage.find(unit) != m_unitUsage.end());
 }
 
 bool TextureUnitManager::isBinded(gl::GLuint textureId) const
@@ -66,20 +55,20 @@ void TextureUnitManager::bind(size_t unit, GLenum target, GLuint textureId, GLui
     glBindSampler(unit, samplerId);
   }
 
-  m_unitUsage.at(unit) = false;
+  m_unitUsage.insert(unit);
   m_unitBinding.emplace(textureId, BindingPair{unit, target});
 }
 
-size_t TextureUnitManager::bind(GLenum target, GLuint textureId, GLuint samplerId)
-{
-  auto firstAvaible = std::find(m_unitUsage.begin(), m_unitUsage.end(), true);
+// size_t TextureUnitManager::bind(GLenum target, GLuint textureId, GLuint samplerId)
+// {
+//   auto firstAvaible = std::find(m_unitUsage.begin(), m_unitUsage.end(), true);
 
-  size_t unit = firstAvaible - m_unitUsage.begin();
+//   size_t unit = firstAvaible - m_unitUsage.begin();
 
-  bind(unit, target, textureId, samplerId);
+//   bind(unit, target, textureId, samplerId);
 
-  return unit;
-}
+//   return unit;
+// }
 
 void TextureUnitManager::unbind(GLuint textureId)
 {
@@ -88,20 +77,13 @@ void TextureUnitManager::unbind(GLuint textureId)
   size_t unit = getUnitBinding(textureId);
   GLenum target = getTargetBinding(textureId);
 
-  assert(!isAvaible(unit));
-
-  Texture::setActiveTextureUnit(unit);
-
-  glBindTexture(target, 0);
-  glBindSampler(unit, 0);
-
-  m_unitUsage.at(unit) = true;
+  m_unitUsage.erase(unit);
   m_unitBinding.erase(textureId);
 }
 
 void TextureUnitManager::unbindAll()
 {
-  std::fill(m_unitUsage.begin(), m_unitUsage.end(), true);
+  m_unitUsage.clear();
   m_unitBinding.clear();
 }
 
@@ -162,7 +144,7 @@ void ImageUnitManager::bind(
     access,
     format
   };
-  
+
   m_unitUsage.insert(unit);
   m_binding.emplace(textureId, binding);
 }
@@ -244,10 +226,10 @@ void Texture::bind(size_t unit, GLenum target)
   getUnitManager().bind(unit, target, m_id, (m_sampler) ? m_sampler->getId() : 0);
 }
 
-size_t Texture::bind(GLenum target)
-{
-  return getUnitManager().bind(target, m_id, (m_sampler) ? m_sampler->getId() : 0);
-}
+// size_t Texture::bind(GLenum target)
+// {
+//   return getUnitManager().bind(target, m_id, (m_sampler) ? m_sampler->getId() : 0);
+// }
 
 void Texture::unbind()
 {
