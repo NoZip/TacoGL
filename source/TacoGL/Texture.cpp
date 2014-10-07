@@ -59,16 +59,22 @@ void TextureUnitManager::bind(size_t unit, GLenum target, GLuint textureId, GLui
   m_unitBinding.emplace(textureId, BindingPair{unit, target});
 }
 
-// size_t TextureUnitManager::bind(GLenum target, GLuint textureId, GLuint samplerId)
-// {
-//   auto firstAvaible = std::find(m_unitUsage.begin(), m_unitUsage.end(), true);
+size_t TextureUnitManager::bind(GLenum target, GLuint textureId, GLuint samplerId)
+{
+  size_t unit = 1;
 
-//   size_t unit = firstAvaible - m_unitUsage.begin();
+  for (;unit < 8; ++unit)
+  {
+    if (isAvaible(unit))
+    {
+      break;
+    }
+  }
 
-//   bind(unit, target, textureId, samplerId);
+  bind(unit, target, textureId, samplerId);
 
-//   return unit;
-// }
+  return unit;
+}
 
 void TextureUnitManager::unbind(GLuint textureId)
 {
@@ -229,10 +235,10 @@ void Texture::bind(size_t unit, GLenum target)
   s_textureUnitManager.bind(unit, target, m_id, (m_sampler) ? m_sampler->getId() : 0);
 }
 
-// size_t Texture::bind(GLenum target)
-// {
-//   return s_textureUnitManager.bind(target, m_id, (m_sampler) ? m_sampler->getId() : 0);
-// }
+size_t Texture::bind(GLenum target)
+{
+  return s_textureUnitManager.bind(target, m_id, (m_sampler) ? m_sampler->getId() : 0);
+}
 
 void Texture::unbind()
 {

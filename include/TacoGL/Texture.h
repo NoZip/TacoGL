@@ -42,7 +42,7 @@ namespace TacoGL
      * Bind a texture to the first avaible unit texture.
      * @param texture the texture to bind.
      */
-    // size_t bind(gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
+    size_t bind(gl::GLenum target, gl::GLuint textureId, gl::GLuint samplerId = 0);
 
     /**
      * Unbind a texture.
@@ -141,7 +141,7 @@ namespace TacoGL
     /**
      * Bind texture to the first avaible texture unit.
      */
-    // size_t bind(gl::GLenum target);
+    size_t bind(gl::GLenum target);
 
     /**
      * Unbind texture.
