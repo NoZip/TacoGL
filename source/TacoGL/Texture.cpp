@@ -1,8 +1,6 @@
 #include <cassert>
 #include <algorithm>
 
-#include <SOIL/SOIL.h>
-
 #include <TacoGL/get.h>
 
 #include <TacoGL/Texture.h>
@@ -345,17 +343,6 @@ void Texture::generateMipmaps()
 {
   assert(isBinded());
   glGenerateMipmap(getTarget());
-}
-
-void Texture::load(const char *filename)
-{
-  assert(isBinded());
-
-  Vector2i size;
-  int channels;
-  unsigned char *data = SOIL_load_image(filename, &(size[0]), &(size[1]), &channels, SOIL_LOAD_RGB);
-
-  setData(0, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, size[0], size[1], (void*) data);
 }
 
 //====================//

@@ -223,8 +223,6 @@ namespace TacoGL
 
     void generateMipmaps();
 
-    void load(const char *filename);
-
     //--------------------//
     // Texture Parameters //
     //--------------------//

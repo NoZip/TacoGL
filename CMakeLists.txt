@@ -58,6 +58,5 @@ target_link_libraries(test_gl
     ${OPENGL_LIBRARIES}
     ${GLBINDING_LIBRARIES}
     ${GLFW_STATIC_LIBRARIES}
-    SOIL
     TacoGL
 )
