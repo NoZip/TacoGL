@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (TacoGL)
 
-# add_definitions("-DGLBINDING_STATIC")
+add_definitions("-DGLBINDING_STATIC")
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
