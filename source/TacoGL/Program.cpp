@@ -74,11 +74,15 @@ std::string Program::getLog()
 {
   GLint logSize = getInfoLogLength();
 
-  GLchar log[logSize];
+  GLchar *rawLog = new GLchar[logSize];
 
-  glGetProgramInfoLog(m_id, logSize, nullptr, log);
+  glGetProgramInfoLog(m_id, logSize, nullptr, rawLog);
 
-  return std::string(log);
+  std::string log(rawLog);
+
+  delete[] rawLog;
+
+  return log;
 }
 
 void Program::use()
@@ -210,10 +214,12 @@ namespace
   inline T getProgramv(GLuint id)
   {
     T vector;
-    GLint data[vector.size()];
+    GLint *data = new GLint[vector.size()];
     glGetProgramiv(id, PARAMETER, data);
 
-    std::copy_n(std::begin(data), vector.size(), std::begin(vector));
+    std::copy_n(data, vector.size(), vector.data());
+
+    delete[] data;
 
     return vector;
   } 

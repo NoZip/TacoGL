@@ -85,11 +85,13 @@ std::string Shader::getLog() const
 {
     GLint logLength = getInfoLogLength();
 
-    GLchar log[logLength];
+    GLchar *rawLog = new GLchar[logLength];
 
-    glGetShaderInfoLog(m_id, logLength, nullptr, log);
+    glGetShaderInfoLog(m_id, logLength, nullptr, rawLog);
 
-    return std::string(log);
+    std::string log(rawLog);
+
+    return log;
 }
 
 void Shader::loadSourceFromStream(
