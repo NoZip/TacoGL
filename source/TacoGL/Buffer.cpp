@@ -22,13 +22,13 @@ BufferManager::~BufferManager()
 
 }
 
-const typename BufferManager::BindedTargetMap &
+const BufferManager::BindedTargetMap &
 BufferManager::getTarget() const
 {
   return m_target;
 }
 
-const typename BufferManager::BindingMap &
+const BufferManager::BindingMap &
 BufferManager::getBinding() const
 {
   return m_binding;

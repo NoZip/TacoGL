@@ -73,6 +73,8 @@ namespace TacoGL
     using UnitUsageSet = std::unordered_set<size_t>;
     using BindingMap = std::unordered_map<gl::GLuint, ImageBinding>;
 
+    static size_t getImageUnitCount();
+
     ImageUnitManager() = default;
     virtual ~ImageUnitManager() = default;
 
@@ -149,6 +151,8 @@ namespace TacoGL
     void unbind();
 
     void unbindAll();
+
+    void bindImage(size_t unit, size_t level, size_t layer, gl::GLenum access, gl::GLenum format);
 
     /**
      * TODO

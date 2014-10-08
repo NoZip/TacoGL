@@ -97,6 +97,11 @@ void TextureUnitManager::unbindAll()
 // Image Unit Manager //
 //====================//
 
+size_t ImageUnitManager::getImageUnitCount()
+{
+  return get<GL_MAX_IMAGE_UNITS, GLint>();
+}
+
 bool ImageUnitManager::isAvaible(size_t unit) const
 {
   return (m_unitUsage.find(unit) == m_unitUsage.end());
@@ -107,7 +112,7 @@ bool ImageUnitManager::isBinded(GLuint textureId) const
   return (m_binding.find(textureId) != m_binding.end());
 }
 
-const typename ImageUnitManager::ImageBinding&
+const ImageUnitManager::ImageBinding&
 ImageUnitManager::getBinding(GLuint textureId) const
 {
   assert(isBinded(textureId));
@@ -131,6 +136,7 @@ void ImageUnitManager::bind(
 {
   assert(isAvaible(unit));
   assert(!isBinded(textureId));
+  assert(m_unitUsage.size() < getImageUnitCount());
 
   glBindImageTexture(
     unit,
@@ -248,6 +254,19 @@ void Texture::unbind()
 void Texture::unbindAll()
 {
   s_textureUnitManager.unbindAll();
+}
+
+void Texture::bindImage(size_t unit, size_t level, size_t layer, gl::GLenum access, gl::GLenum format)
+{
+  s_imageUnitManager.bind(
+    unit,
+    m_id,
+    level,
+    false,
+    layer,
+    access,
+    format
+  );
 }
 
 void Texture::getData(size_t level, GLenum format, GLenum type, void *img) const
