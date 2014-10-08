@@ -6,7 +6,7 @@ add_definitions("-DGLBINDING_STATIC")
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glbinding REQUIRED)
-find_package(Eigen3 REQUIRED)
+#find_package(Eigen3 REQUIRED)
 # find_package(glfw REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 
@@ -15,7 +15,6 @@ set(CMAKE_CXX_FLAGS  "-std=c++11")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source/")
 
-include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${INCLUDE_DIR})
 
 set(TACOGL_INC_DIR "${INCLUDE_DIR}/TacoGL/")
@@ -56,7 +55,7 @@ set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/test/")
 add_executable(test_gl "${TEST_DIR}/test_gl.cpp")
 target_link_libraries(test_gl
     ${OPENGL_LIBRARIES}
-    ${GLBINDING_LIBRARIES}
+    ${GLBINDING_STASTIC_LIBRARIES}
     ${GLFW_STATIC_LIBRARIES}
     TacoGL
 )
