@@ -63,8 +63,8 @@ void Shader::setSource(std::ifstream &stream)
 
     assert(!source.empty());
 
-    const GLchar *internalSource[source.size()];
-    GLint lineLength[source.size()];
+    const GLchar **internalSource = new const GLchar*[source.size()];
+    GLint *lineLength = new GLint[source.size()];
 
     for (int i = 0; i < source.size(); ++i)
     {
@@ -73,6 +73,9 @@ void Shader::setSource(std::ifstream &stream)
     }
 
     setSource(source.size(), lineLength, internalSource);
+
+	delete[] internalSource;
+	delete[] lineLength;
 }
 
 void Shader::setSource(const std::string &filename)

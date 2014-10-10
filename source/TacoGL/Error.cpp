@@ -11,7 +11,7 @@ GLenum InternalError::get()
   return glGetError();
 }
 
-void InternalError::check(const glbinding::FunctionCall &call)
+void InternalError::check(const FunctionCall &call)
 {
   GLenum error = get();
   if (error != GL_NO_ERROR)
