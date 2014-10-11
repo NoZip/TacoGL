@@ -1,33 +1,34 @@
 cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 project (TacoGL)
 
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
+set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
+
 add_definitions(-DGLBINDING_STATIC)
 
 add_definitions(-DSHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 
-# find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glbinding REQUIRED)
-#find_package(Eigen3 REQUIRED)
-# find_package(glfw REQUIRED)
-# pkg_search_module(GLFW REQUIRED glfw3)
 
 if(MSVC)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformWindowsMSVC.cmake)
     set(CMAKE_CXX_FLAGS -EHa)
+    set(GLBINDING_LIBRARIES ${LIB_DIR}/glbindingd.lib)
+    set(GLFW_LIBRARIES ${LIB_DIR}/glfw3.lib)
 elseif(WIN32 AND CMAKE_COMPILER_IS_GNUCXX)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformWindowsGCC.cmake)
 elseif(APPLE)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformMacOS.cmake)
 elseif(UNIX)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformLinux.cmake)
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(GLFW REQUIRED glfw3)
+    set(GLFW_LIBRARIES ${GLFW_STATIC_LIBRARIES})
 else()
     message(WARNING "Unsupported platform/compiler combination")
 endif()
-
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/")
-set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source/")
-set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/")
 
 include_directories(${INCLUDE_DIR})
 
@@ -69,9 +70,7 @@ set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/test/")
 add_executable(test_gl "${TEST_DIR}/test_gl.cpp")
 target_link_libraries(test_gl
     ${OPENGL_LIBRARIES}
-    # ${GLBINDING_LIBRARIES}
-    ${LIB_DIR}/glbindingd.lib
-    # ${GLFW_STATIC_LIBRARIES}
-	${LIB_DIR}/glfw3.lib
+    ${GLBINDING_LIBRARIES}
+    ${GLFW_LIBRARIES}
     TacoGL
 )
