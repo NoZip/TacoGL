@@ -11,6 +11,11 @@ namespace TacoGL
 {
 
   namespace {
+
+    //==========================//
+    // Getters for OpenGL types //
+    //==========================//
+
     inline void _get(gl::GLenum parameter, gl::GLboolean *data)
     {
       gl::glGetBooleanv(parameter, data);
@@ -31,6 +36,10 @@ namespace TacoGL
       gl::glGetIntegerv(parameter, data);
     }
 
+    //------------------//
+    // Indexed versions //
+    //------------------//
+
     inline void _get(gl::GLenum parameter, gl::GLuint index, gl::GLboolean *data)
     {
       gl::glGetBooleani_v(parameter, index, data);
@@ -50,68 +59,77 @@ namespace TacoGL
     {
       gl::glGetIntegeri_v(parameter, index, data);
     }
+
+    //==========================//
+    // Getters for others types //
+    //==========================//
+
+    inline void _get(gl::GLenum parameter, bool *data)
+    {
+      gl::GLboolean value;
+      _get(parameter, &value);
+      *data = (value == gl::GL_TRUE);
+    }
+
+    inline void _get(gl::GLenum parameter, size_t *data)
+    {
+      gl::GLint value;
+      _get(parameter, &value);
+      *data = static_cast<size_t>(value);
+    }
+
+    //------------------//
+    // Indexed versions //
+    //------------------//
+
+    inline void _get(gl::GLenum parameter, gl::GLuint index, bool *data)
+    {
+      gl::GLboolean value;
+      _get(parameter, index, &value);
+      *data = (value == gl::GL_TRUE);
+    }
+
+    inline void _get(gl::GLenum parameter, gl::GLuint index, size_t *data)
+    {
+      gl::GLint value;
+      _get(parameter, index, &value);
+      *data = static_cast<size_t>(value);
+    }
   }
 
-  template<gl::GLenum PARAMETER, typename T>
-  inline T get()
+  /**
+   * Fetches OpenGL global parameters.
+   *
+   * @tparam PARAMETER The parameter to fetch.
+   * @tparam Type      The type to return.
+   */
+  template<gl::GLenum PARAMETER, typename Type>
+  inline Type get()
   {
-    T data;
+    Type data;
     _get(PARAMETER, &data);
     return data;
   }
 
-  template<gl::GLenum PARAMETER, typename T>
-  T getv()
+  /**
+   * Fetches OpenGL global parameters, Vector version.
+   *
+   * @tparam PARAMETER The parameter to fetch.
+   * @tparam Vector    The type to return.
+   */
+  template<gl::GLenum PARAMETER, typename Vector>
+  inline Vector getv()
   {
-    T vector;
+    Vector vector;
+
     auto it = vector.data();
+
     for (int i = 0; i < vector.size(); ++i)
     {
       _get(PARAMETER, i, it++);
     }
+
     return vector;
-  }
-
-  inline gl::GLuint getActiveTexture()
-  {
-    return get<gl::GL_ACTIVE_TEXTURE, gl::GLint>() - static_cast<gl::GLint>(gl::GL_TEXTURE0);
-  }
-
-  inline Vector2 getAliasedLineWidthRange()
-  {
-    return getv<gl::GL_ALIASED_LINE_WIDTH_RANGE, Vector2>();
-  }
-
-  inline gl::GLuint getArrayBufferBinding()
-  {
-    return get<gl::GL_ARRAY_BUFFER_BINDING, gl::GLint>();
-  }
-
-  inline Vector4 getColorClearValue()
-  {
-    return getv<gl::GL_COLOR_CLEAR_VALUE, Vector4>();
-  }
-
-  inline Vector4b getColorWriteMask()
-  {
-    return getv<gl::GL_COLOR_WRITEMASK, Vector4b>();
-  }
-
-// TODO : gl::GL_COMPRESSED_TEXTURE_FORMATS
-
-  inline size_t getMaxCombinedTextureImageUnits()
-  {
-    return get<gl::GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, gl::GLint>();
-  }
-
-  inline Vector3i getMaxComputeWorkGroupCount()
-  {
-    return getv<gl::GL_MAX_COMPUTE_WORK_GROUP_COUNT, Vector3i>();
-  }
-
-  inline Vector3i getMaxComputeWorkGroupSize()
-  {
-    return getv<gl::GL_MAX_COMPUTE_WORK_GROUP_SIZE, Vector3i>();
   }
 
 } // end namespace GL
