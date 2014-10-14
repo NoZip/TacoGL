@@ -3,6 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <list>
+#include <unordered_set>
+#include <unordered_map>
 #include <istream>
 
 #include <TacoGL/OpenGL.h>
@@ -12,6 +15,59 @@
 
 namespace TacoGL
 {
+  /**
+   * Exception for shader compilation errors handling.
+   */
+  class CompilationError : public Error
+  {
+  public:
+    CompilationError(const std::string &log) throw();
+    virtual ~CompilationError() throw();
+
+    virtual const char* what() const throw();
+
+  protected:
+    std::string m_log;
+  };
+
+  using GLSLSource = std::vector<std::string>; 
+
+  class ShaderFinder
+  {
+  public:
+    using DirectoryList = std::list<std::string>;
+
+    ShaderFinder() = default;
+    ShaderFinder(const DirectoryList &directories);
+    virtual ~ShaderFinder() = default;
+
+    void addDirectory(const std::string &directory);
+
+    std::string find(const std::string &filename) const;
+
+  protected:
+    DirectoryList m_directories;
+  };
+
+  class SourceLoader
+  {
+  public:
+    using IncludeSet = std::unordered_set<std::string>;
+    using DefineMap = std::unordered_map<std::string, std::string>;
+
+    SourceLoader(const ShaderFinder &manager);
+    virtual ~SourceLoader() = default;
+
+    void load(
+      const std::string &filename,
+      GLSLSource &source,
+      const DefineMap &defines = {}
+    );
+
+  protected:
+    const ShaderFinder &m_finder;
+    IncludeSet m_includes;
+  };
 
   /**
    * Handle OpenGL shader operations.
@@ -19,34 +75,7 @@ namespace TacoGL
   class Shader : public Object
   {
   public:
-    /**
-     * Exception for shader compilation errors handling.
-     */
-    class CompilationError : public Error
-    {
-    public:
-      CompilationError(const std::string &log) throw();
-      virtual ~CompilationError() throw();
-
-      virtual const char* what() const throw();
-
-    protected:
-      std::string m_log;
-    };
-
-    /**
-     * Enum for shader type.
-     * @see [7.1-2] of opengl spec.
-     */
-    // enum class Type : GLenum
-    // {
-    //   VERTEX          = GL_VERTEX_SHADER,
-    //   FRAGMENT        = GL_FRAGMENT_SHADER,
-    //   GEOMETRY        = GL_GEOMETRY_SHADER,
-    //   TESS_EVALUATION = GL_TESS_EVALUATION_SHADER,
-    //   TESS_CONTROL    = GL_TESS_CONTROL_SHADER,
-    //   COMPUTE         = GL_COMPUTE_SHADER
-    // };
+    static ShaderFinder & getFinder();
 
     /**
      * Default constructor.
@@ -66,29 +95,12 @@ namespace TacoGL
      */
     virtual ~Shader();
 
-    /**
-     * Set shader source from raw data.
-     * @param sourceLength Source size.
-     * @param lineLength   An array of line size.
-     * @param source       The source in an array of lines.
-     */
+    void setSource(const GLSLSource &source);
+
     void setSource(
-      gl::GLsizei sourceLength,
-      const gl::GLint *lineLength,
-      const gl::GLchar * const *source
+      const std::string &filename,
+      const SourceLoader::DefineMap &defines = {}
     );
-
-    /**
-     * Load source from stream.
-     * @param stream The stream to read source from.
-     */
-    void setSource(std::ifstream &stream);
-
-    /**
-     * Load source from file.
-     * @param filename File to load.
-     */
-    void setSource(const std::string &filename);
 
     /**
      * Compile the shader.
@@ -107,17 +119,8 @@ namespace TacoGL
     size_t getInfoLogLength() const;
     size_t getShaderSourceLength() const;
 
-
-   protected:
-    /**
-     * Lod source from a stream into a vector of string.
-     * @param stream The stream to read from.
-     * @param source the vector to write into.
-     */
-    static void loadSourceFromStream(
-      std::istream &stream,
-      std::vector<std::string> &source
-    );
+  protected:
+    static ShaderFinder s_finder;
   };
 
 } // end namespace GL

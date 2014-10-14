@@ -1,26 +1,110 @@
-#include <fstream>
 #include <cassert>
+#include <fstream>
+#include <regex>
 
 #include <TacoGL/Shader.h>
 
 using namespace gl;
 using namespace TacoGL;
 
-Shader::CompilationError::CompilationError(const std::string &log) throw()
+CompilationError::CompilationError(const std::string &log) throw()
 : m_log(log)
 {
 
 }
 
-Shader::CompilationError::~CompilationError() throw()
+CompilationError::~CompilationError() throw()
 {
 
 }
 
-const char * Shader::CompilationError::what() const throw()
+const char * CompilationError::what() const throw()
 {
   return m_log.c_str();
 }
+
+ShaderFinder::ShaderFinder(const ShaderFinder::DirectoryList &directories)
+: m_directories(directories)
+{
+
+}
+
+void ShaderFinder::addDirectory(const std::string &directory)
+{
+  m_directories.push_back(directory);
+}
+
+std::string ShaderFinder::find(const std::string &filename) const
+{
+  for (auto &directory : m_directories)
+  {
+    std::string path = directory + filename;
+    std::ifstream input(path);
+    if (input.is_open())
+    {
+      input.close();
+      return path;
+    }
+  }
+
+  return "not found";
+}
+
+SourceLoader::SourceLoader(const ShaderFinder &finder)
+: m_finder(finder), m_includes()
+{
+
+}
+
+namespace
+{
+  std::regex includeRegex("#include\\s+(.+)");
+}
+
+void SourceLoader::load(
+  const std::string &filename,
+  GLSLSource &source,
+  const SourceLoader::DefineMap &defines
+)
+{
+  for (auto &definePair : defines)
+  {
+    source.push_back("#define " + definePair.first + " " + definePair.second + "\n");
+  }
+
+  std::ifstream input(m_finder.find(filename));
+
+  std::string line;
+  std::smatch matchGroups;
+  while (std::getline(input, line))
+  {
+    if (std::regex_match(line, matchGroups, includeRegex))
+    {
+      std::string include = matchGroups[1];
+
+      if (m_includes.find(include) != m_includes.end())
+      {
+        continue;
+      }
+
+      m_includes.insert(include);
+
+      load(include, source);
+
+      continue;
+    }
+    
+    line += '\n';
+    source.push_back(line);
+  }
+}
+
+ShaderFinder & Shader::getFinder()
+{
+  return s_finder;
+}
+
+ShaderFinder Shader::s_finder;
 
 Shader::Shader(GLenum type)
 {
@@ -46,42 +130,34 @@ void Shader::compile() {
   }
 }
 
+void Shader::setSource(const GLSLSource &source)
+{
+  assert(!source.empty());
+
+  const GLchar **internalSource = new const GLchar*[source.size()];
+  GLint *lineLength = new GLint[source.size()];
+
+  for (int i = 0; i < source.size(); ++i)
+  {
+      internalSource[i] = source[i].c_str();
+      lineLength[i] = source[i].size();
+  }
+
+  glShaderSource(m_id, source.size(), internalSource, lineLength);
+
+  delete[] internalSource;
+  delete[] lineLength;
+}
+
 void Shader::setSource(
-  GLsizei sourceLength,
-  const GLint *lineLength,
-  const GLchar * const *source
+  const std::string &filename,
+  const SourceLoader::DefineMap &defines
 )
-{
-  glShaderSource(m_id, sourceLength, source, lineLength);
-}
+{  
+  GLSLSource source;
+  SourceLoader(s_finder).load(filename, source, defines);
 
-void Shader::setSource(std::ifstream &stream)
-{
-    std::vector<std::string> source;
-
-    loadSourceFromStream(stream, source);
-
-    assert(!source.empty());
-
-    const GLchar **internalSource = new const GLchar*[source.size()];
-    GLint *lineLength = new GLint[source.size()];
-
-    for (int i = 0; i < source.size(); ++i)
-    {
-        internalSource[i] = source[i].c_str();
-        lineLength[i] = source[i].size();
-    }
-
-    setSource(source.size(), lineLength, internalSource);
-
-	delete[] internalSource;
-	delete[] lineLength;
-}
-
-void Shader::setSource(const std::string &filename)
-{
-    std::ifstream file(filename);
-    setSource(file);
+  setSource(source);
 }
 
 std::string Shader::getLog() const
@@ -95,19 +171,6 @@ std::string Shader::getLog() const
     std::string log(rawLog);
 
     return log;
-}
-
-void Shader::loadSourceFromStream(
-    std::istream &stream,
-    std::vector<std::string> &source
-)
-{
-    std::string line;
-    while (getline(stream, line))
-    {
-        line += '\n';
-        source.push_back(line);
-    }
 }
 
 template<GLenum PARAMETER, typename T>
