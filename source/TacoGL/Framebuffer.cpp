@@ -1,5 +1,8 @@
 #include <cassert>
 
+#include <vector>
+
+#include <TacoGL/get.h>
 #include <TacoGL/Framebuffer.h>
 
 using namespace gl;
@@ -61,6 +64,11 @@ void FramebufferManager::unbind(GLuint framebufferId)
 // Framebuffer //
 //=============//
 
+size_t Framebuffer::getMaxDrawBuffers()
+{
+  return get<GL_MAX_DRAW_BUFFERS, size_t>();
+}
+
 Framebuffer::Framebuffer()
 {
   glGenFramebuffers(1, &m_id);
@@ -91,27 +99,55 @@ void Framebuffer::unbind()
   s_manager.unbind(m_id);
 }
 
+void Framebuffer::setDrawBuffers(size_t count)
+{
+  assert(isBinded());
+  assert(count < getMaxDrawBuffers());
+
+  std::vector<GLenum> buffers(count);
+
+  for (int i = 0; i < count; ++i)
+  {
+    buffers[i] = static_cast<GLenum>(static_cast<GLuint>(GL_COLOR_ATTACHMENT0) + i);
+  }
+
+  glDrawBuffers(count, buffers.data());
+}
+
 void Framebuffer::attachTexture(
-  GLenum attachment​,
+  size_t attachment,
   const Texture &texture,
   size_t level
 )
 {
   assert(isBinded());
-  glFramebufferTexture(getTarget(), attachment​, texture.getId(), level);
+  assert(attachment < getMaxDrawBuffers());
+
+  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
+
+  glFramebufferTexture(
+    getTarget(),
+    static_cast<GLenum>(attachment),
+    texture.getId(),
+    level
+  );
 }
 
 void Framebuffer::attachTexture(
-  GLenum attachment,
+  size_t attachment,
   GLenum textarget,
   const Texture &texture,
   size_t level
 )
 {
   assert(isBinded());
+  assert(attachment < getMaxDrawBuffers());
+
+  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
+
   glFramebufferTexture2D(
     getTarget(),
-    attachment,
+    static_cast<GLenum>(attachment),
     textarget,
     texture.getId(),
     level
@@ -119,16 +155,20 @@ void Framebuffer::attachTexture(
 }
 
 void Framebuffer::attachTextureLayer(
-  GLenum attachment​,
+  size_t attachment,
   const Texture &texture,
   size_t level,
   size_t layer
 )
 {
   assert(isBinded());
+  assert(attachment < getMaxDrawBuffers());
+
+  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
+
   glFramebufferTextureLayer(
     getTarget(),
-    attachment​,
+    static_cast<GLenum>(attachment),
     texture.getId(),
     level,
     layer
@@ -136,13 +176,18 @@ void Framebuffer::attachTextureLayer(
 }
 
 void Framebuffer::attachRenderbuffer(
-  GLenum attachment,
+  size_t attachment,
   const Renderbuffer &renderbuffer
 )
 {
+  assert(isBinded());
+  assert(attachment < getMaxDrawBuffers());
+
+  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
+
   glFramebufferRenderbuffer(
     getTarget(),
-    attachment,
+    static_cast<GLenum>(attachment),
     GL_RENDERBUFFER,
     renderbuffer.getId()
   );

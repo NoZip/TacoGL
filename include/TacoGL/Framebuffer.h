@@ -16,7 +16,7 @@ namespace TacoGL
   {
   public:
     FramebufferManager();
-    ~FramebufferManager();
+    virtual ~FramebufferManager();
 
     bool isAvaible(gl::GLenum target) const;
     bool isBinded(gl::GLuint framebufferId) const;
@@ -33,6 +33,8 @@ namespace TacoGL
   class Framebuffer : public Object
   {
   public:
+    static size_t getMaxDrawBuffers();
+
     Framebuffer();
     virtual ~Framebuffer();
 
@@ -42,28 +44,34 @@ namespace TacoGL
     void bind(gl::GLenum target);
     void unbind();
 
+    /**
+     * Set the number of color attachment in the Framebuffer.
+     * @param count the number of color attachment.
+     */
+    void setDrawBuffers(size_t count);
+
     void attachTexture(
-      gl::GLenum attachment​,
+      size_t attachment​,
       const Texture &texture,
       size_t level
     );
 
     void attachTexture(
-      gl::GLenum attachment​,
+      size_t attachment​,
       gl::GLenum textarget​,
       const Texture &texture​,
       size_t level​
     );
 
     void attachTextureLayer(
-      gl::GLenum attachment​,
+      size_t attachment​,
       const Texture &texture,
       size_t level,
       size_t layer
     );
 
     void attachRenderbuffer(
-      gl::GLenum attachment,
+      size_t attachment,
       const Renderbuffer &renderbuffer
     );
 
