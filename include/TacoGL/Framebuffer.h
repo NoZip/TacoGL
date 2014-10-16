@@ -33,6 +33,12 @@ namespace TacoGL
   class Framebuffer : public Object
   {
   public:
+    template<size_t index>
+    static inline gl::GLenum colorAttachment()
+    {
+      return static_cast<gl::GLenum>(static_cast<size_t>(GL_COLOR_ATTACHMENT) + index);
+    }
+
     static size_t getMaxDrawBuffers();
 
     Framebuffer();
@@ -51,27 +57,27 @@ namespace TacoGL
     void setDrawBuffers(size_t count);
 
     void attachTexture(
-      size_t attachment​,
+      gl::GLenum attachment​,
       const Texture &texture,
       size_t level
     );
 
     void attachTexture(
-      size_t attachment​,
+      gl::GLenum attachment​,
       gl::GLenum textarget​,
       const Texture &texture​,
       size_t level​
     );
 
     void attachTextureLayer(
-      size_t attachment​,
+      gl::GLenum attachment​,
       const Texture &texture,
       size_t level,
       size_t layer
     );
 
     void attachRenderbuffer(
-      size_t attachment,
+      gl::GLenum attachment,
       const Renderbuffer &renderbuffer
     );
 

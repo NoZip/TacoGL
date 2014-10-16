@@ -102,7 +102,6 @@ void Framebuffer::unbind()
 void Framebuffer::setDrawBuffers(size_t count)
 {
   assert(isBinded());
-  assert(count < getMaxDrawBuffers());
 
   std::vector<GLenum> buffers(count);
 
@@ -115,39 +114,33 @@ void Framebuffer::setDrawBuffers(size_t count)
 }
 
 void Framebuffer::attachTexture(
-  size_t attachment,
+  gl::GLenum attachment,
   const Texture &texture,
   size_t level
 )
 {
   assert(isBinded());
-  assert(attachment < getMaxDrawBuffers());
-
-  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
 
   glFramebufferTexture(
     getTarget(),
-    static_cast<GLenum>(attachment),
+    attachment,
     texture.getId(),
     level
   );
 }
 
 void Framebuffer::attachTexture(
-  size_t attachment,
+  gl::GLenum attachment,
   GLenum textarget,
   const Texture &texture,
   size_t level
 )
 {
   assert(isBinded());
-  assert(attachment < getMaxDrawBuffers());
-
-  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
 
   glFramebufferTexture2D(
     getTarget(),
-    static_cast<GLenum>(attachment),
+    attachment,
     textarget,
     texture.getId(),
     level
@@ -155,20 +148,17 @@ void Framebuffer::attachTexture(
 }
 
 void Framebuffer::attachTextureLayer(
-  size_t attachment,
+  gl::GLenum attachment,
   const Texture &texture,
   size_t level,
   size_t layer
 )
 {
   assert(isBinded());
-  assert(attachment < getMaxDrawBuffers());
-
-  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
 
   glFramebufferTextureLayer(
     getTarget(),
-    static_cast<GLenum>(attachment),
+    attachment,
     texture.getId(),
     level,
     layer
@@ -176,18 +166,15 @@ void Framebuffer::attachTextureLayer(
 }
 
 void Framebuffer::attachRenderbuffer(
-  size_t attachment,
+  gl::GLenum attachment,
   const Renderbuffer &renderbuffer
 )
 {
   assert(isBinded());
-  assert(attachment < getMaxDrawBuffers());
-
-  attachment += static_cast<GLuint>(GL_COLOR_ATTACHMENT0);
 
   glFramebufferRenderbuffer(
     getTarget(),
-    static_cast<GLenum>(attachment),
+    attachment,
     GL_RENDERBUFFER,
     renderbuffer.getId()
   );
