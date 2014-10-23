@@ -64,6 +64,8 @@ void FramebufferManager::unbind(GLuint framebufferId)
 // Framebuffer //
 //=============//
 
+FramebufferManager Framebuffer::s_manager;
+
 size_t Framebuffer::getMaxDrawBuffers()
 {
   return get<GL_MAX_DRAW_BUFFERS, size_t>();
