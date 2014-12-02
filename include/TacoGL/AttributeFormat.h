@@ -47,6 +47,42 @@ namespace TacoGL
     {
       return gl::GL_FLOAT;
     }
+
+    template <>
+    inline gl::GLenum _type<gl::GLbyte>()
+    {
+      return gl::GL_BYTE;
+    }
+
+    template <>
+    inline gl::GLenum _type<gl::GLubyte>()
+    {
+      return gl::GL_UNSIGNED_BYTE;
+    }
+
+    template <>
+    inline gl::GLenum _type<gl::GLshort>()
+    {
+      return gl::GL_SHORT;
+    }
+
+    template <>
+    inline gl::GLenum _type<gl::GLushort>()
+    {
+      return gl::GL_UNSIGNED_SHORT;
+    }
+
+    template <>
+    inline gl::GLenum _type<gl::GLint>()
+    {
+      return gl::GL_INT;
+    }
+
+    template <>
+    inline gl::GLenum _type<gl::GLuint>()
+    {
+      return gl::GL_UNSIGNED_INT;
+    }
   }
 
   template <typename T>

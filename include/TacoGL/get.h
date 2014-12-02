@@ -64,6 +64,13 @@ namespace TacoGL
     // Getters for others types //
     //==========================//
 
+    inline void _get(gl::GLenum parameter, gl::GLuint *data)
+    {
+      gl::GLint value;
+      _get(parameter, &value);
+      *data = static_cast<gl::GLuint>(value);
+    }
+
     inline void _get(gl::GLenum parameter, bool *data)
     {
       gl::GLboolean value;

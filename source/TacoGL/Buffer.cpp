@@ -44,15 +44,23 @@ bool BufferManager::isBinded(GLuint bufferId) const
   return m_binding.find(bufferId) != m_binding.end();
 }
 
+// bool isBinded(gl::GLuint bufferId, gl::GLenum target) const
+// {
+//   if (!isBinded(bufferId))
+//     return false;
+
+//   return m_binding.at(bufferId) == target;
+// }
+
 GLenum BufferManager::getBinding(GLuint bufferId) const
 {
-  assert(isBinded(bufferId));
+  // assert(isBinded(bufferId));
   return m_binding.at(bufferId);
 }
 
 void BufferManager::bind(GLenum target, GLuint bufferId)
 {
-  assert(isAvaible(target));
+  // assert(isAvaible(target));
 
   glBindBuffer(target, bufferId);
 
@@ -62,7 +70,7 @@ void BufferManager::bind(GLenum target, GLuint bufferId)
 
 void BufferManager::unbind(GLuint bufferId)
 {
-  assert(isBinded(bufferId));
+  // assert(isBinded(bufferId));
 
   GLenum target = m_binding.at(bufferId);
 
@@ -85,6 +93,82 @@ void BufferManager::debug() const
   for (auto &item : m_binding) {
     std::cout << "Buffer " << item.first << " binded to " << Meta::getString(item.second) << std::endl;
   }
+}
+
+//=
+// Target Binging Getters //
+//=
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_ARRAY_BUFFER>()
+{
+  return TacoGL::get<gl::GL_ARRAY_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_ATOMIC_COUNTER_BUFFER>()
+{
+  return TacoGL::get<gl::GL_ATOMIC_COUNTER_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_COPY_READ_BUFFER>()
+{
+  return TacoGL::get<gl::GL_COPY_READ_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_COPY_WRITE_BUFFER>()
+{
+  return TacoGL::get<gl::GL_COPY_WRITE_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_DRAW_INDIRECT_BUFFER>()
+{
+  return TacoGL::get<gl::GL_DRAW_INDIRECT_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_DISPATCH_INDIRECT_BUFFER>()
+{
+  return TacoGL::get<gl::GL_DISPATCH_INDIRECT_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_ELEMENT_ARRAY_BUFFER>()
+{
+  return TacoGL::get<gl::GL_ELEMENT_ARRAY_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_PIXEL_PACK_BUFFER>()
+{
+  return TacoGL::get<gl::GL_PIXEL_PACK_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_PIXEL_UNPACK_BUFFER>()
+{
+  return TacoGL::get<gl::GL_PIXEL_UNPACK_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_SHADER_STORAGE_BUFFER>()
+{
+  return TacoGL::get<gl::GL_SHADER_STORAGE_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_TRANSFORM_FEEDBACK_BUFFER>()
+{
+  return TacoGL::get<gl::GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, gl::GLuint>();
+}
+
+template <>
+gl::GLuint Buffer::getBinding<gl::GL_UNIFORM_BUFFER>()
+{
+  return TacoGL::get<gl::GL_UNIFORM_BUFFER_BINDING, gl::GLuint>();
 }
 
 BufferManager Buffer::s_manager;
@@ -112,7 +196,7 @@ bool Buffer::isBinded() const
 
 gl::GLenum Buffer::getTarget() const
 {
-  assert(isBinded());
+  // assert(isBinded());
   return s_manager.getBinding(m_id);
 }
 

@@ -21,7 +21,8 @@ VertexBufferFormat::~VertexBufferFormat()
 
 void VertexBufferFormat::init(const Program &program, Buffer &buffer)
 {
-  buffer.bind(GL_ARRAY_BUFFER);
+  if (!buffer.isBinded())
+    buffer.bind(GL_ARRAY_BUFFER);
 
   for (auto &item : m_attributes)
   {

@@ -10,10 +10,10 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 add_definitions(-DSHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 
 find_package(OpenGL REQUIRED)
-find_package(glbinding REQUIRED)
+# find_package(glbinding REQUIRED)
 
 if(MSVC)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformWindowsMSVC.cmake)
+    # include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformWindowsMSVC.cmake)
     set(CMAKE_CXX_FLAGS -EHa)
     set(GLBINDING_LIBRARIES ${LIB_DIR}/glbindingd.lib)
     set(GLFW_LIBRARIES ${LIB_DIR}/glfw3.lib)

@@ -1,3 +1,4 @@
+// Others
 
 template <typename T>
 void Buffer::allocate(size_t size, gl::GLenum usage, const T* data)

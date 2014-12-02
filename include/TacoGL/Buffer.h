@@ -9,6 +9,7 @@
 
 #include <TacoGL/OpenGL.h>
 #include <TacoGL/Error.h>
+#include <TacoGL/get.h>
 #include <TacoGL/Object.h>
 
 namespace TacoGL
@@ -31,6 +32,7 @@ namespace TacoGL
     const BindingMap & getBinding() const;
     bool isAvaible(gl::GLenum target) const;
     bool isBinded(gl::GLuint bufferId) const;
+    bool isBinded(gl::GLuint bufferId, gl::GLenum target) const;
     gl::GLenum getBinding(gl::GLuint bufferId) const;
 
     void bind(gl::GLenum target, gl::GLuint bufferId);
@@ -50,10 +52,14 @@ namespace TacoGL
   class Buffer : public Object
   {
   public:
+    template <gl::GLenum TARGET>
+    static gl::GLuint getBinding();
+
     Buffer();
     virtual ~Buffer();
 
     size_t getSize() const;
+
     bool isBinded() const;
     gl::GLenum getTarget() const;
 
