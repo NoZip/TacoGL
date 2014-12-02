@@ -47,6 +47,22 @@ namespace TacoGL
     using AttributeMap = std::unordered_map<std::string, GLSLVariable>;
     using UniformMap = std::unordered_map<std::string, GLSLVariable>;
 
+    static size_t getMaxShaderStorageBlocks();
+    // GL_CURRENT_PROGRAM
+    // GL_MAX_COMBINED_ATOMIC_COUNTERS
+    // GL_MAX_COMBINED_UNIFORM_BLOCKS
+    // GL_MAX_SHADER_STORAGE_BUFFER_BINDINGS
+    // GL_MAX_UNIFORM_BUFFER_BINDINGS
+    // GL_MAX_UNIFORM_BLOCK_SIZE
+    // GL_MAX_UNIFORM_LOCATIONS
+    // GL_PROGRAM_BINARY_FORMATS
+    // GL_PROGRAM_PIPELINE_BINDING
+    // GL_PROGRAM_POINT_SIZE
+    // GL_SHADER_STORAGE_BUFFER_BINDING
+    // GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT
+    // GL_SHADER_STORAGE_BUFFER_START
+    // GL_SHADER_STORAGE_BUFFER_SIZE
+
     Program();
     virtual ~Program();
 

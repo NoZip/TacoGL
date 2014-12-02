@@ -1,4 +1,6 @@
 #include <cassert>
+#include <iostream>
+
 #include <fstream>
 #include <regex>
 
@@ -47,7 +49,7 @@ std::string ShaderFinder::find(const std::string &filename) const
     }
   }
 
-  return "not found";
+  throw std::string("not found");
 }
 
 SourceLoader::SourceLoader(const ShaderFinder &finder)
@@ -72,7 +74,9 @@ void SourceLoader::load(
     source.push_back("#define " + definePair.first + " " + definePair.second + "\n");
   }
 
-  std::ifstream input(m_finder.find(filename));
+  std::string path = m_finder.find(filename);
+  std::cout << "Loading shader source from " + path << std::endl;
+  std::ifstream input(path);
 
   std::string line;
   std::smatch matchGroups;

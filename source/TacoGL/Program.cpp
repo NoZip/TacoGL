@@ -1,5 +1,7 @@
 #include <cassert>
 
+#include <TacoGL/get.h>
+
 #include <TacoGL/Program.h>
 
 using namespace gl;
@@ -28,6 +30,11 @@ const char * Program::LinkError::what() const throw()
 //=========//
 // Program //
 //=========//
+
+size_t Program::getMaxShaderStorageBlocks()
+{
+  return get<GL_MAX_COMBINED_SHADER_STORAGE_BLOCKS, GLint>();
+}
 
 Program::Program()
 {
