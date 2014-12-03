@@ -60,7 +60,7 @@ SourceLoader::SourceLoader(const ShaderFinder &finder)
 
 namespace
 {
-  std::regex includeRegex("#include\\s+(.+)");
+  std::regex includeRegex("#include\\s+<(.+)>");
 }
 
 void SourceLoader::load(
