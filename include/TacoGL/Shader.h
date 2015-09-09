@@ -61,7 +61,7 @@ namespace TacoGL
     void load(
       const std::string &filename,
       GLSLSource &source,
-      const DefineMap &defines = {}
+      const DefineMap &defines = DefineMap()
     );
 
   protected:
@@ -99,7 +99,7 @@ namespace TacoGL
 
     void setSource(
       const std::string &filename,
-      const SourceLoader::DefineMap &defines = {}
+      const SourceLoader::DefineMap &defines = SourceLoader::DefineMap()
     );
 
     /**

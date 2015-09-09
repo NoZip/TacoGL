@@ -36,7 +36,7 @@ namespace TacoGL
     template<size_t index>
     static inline gl::GLenum colorAttachment()
     {
-      return static_cast<gl::GLenum>(static_cast<size_t>(GL_COLOR_ATTACHMENT) + index);
+      return static_cast<gl::GLenum>(static_cast<size_t>(gl::GL_COLOR_ATTACHMENT0) + index);
     }
 
     static size_t getMaxDrawBuffers();

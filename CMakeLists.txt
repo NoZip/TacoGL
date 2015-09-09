@@ -22,10 +22,9 @@ elseif(WIN32 AND CMAKE_COMPILER_IS_GNUCXX)
 elseif(APPLE)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformMacOS.cmake)
 elseif(UNIX)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformLinux.cmake)
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(GLFW REQUIRED glfw3)
-    set(GLFW_LIBRARIES ${GLFW_STATIC_LIBRARIES})
+    set(CMAKE_CXX_FLAGS -std=c++11)
+    find_package(glbinding REQUIRED)
+    
 else()
     message(WARNING "Unsupported platform/compiler combination")
 endif()
@@ -64,12 +63,12 @@ install(TARGETS TacoGL
   ARCHIVE DESTINATION lib
 )
 
-set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/test/")
+# set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/test/")
 
-add_executable(test_gl "${TEST_DIR}/test_gl.cpp")
-target_link_libraries(test_gl
-    ${OPENGL_LIBRARIES}
-    ${GLBINDING_LIBRARIES}
-    ${GLFW_LIBRARIES}
-    TacoGL
-)
+# add_executable(test_gl "${TEST_DIR}/test_gl.cpp")
+# target_link_libraries(test_gl
+#     ${OPENGL_LIBRARIES}
+#     ${GLBINDING_LIBRARIES}
+#     ${GLFW_LIBRARIES}
+#     TacoGL
+# )

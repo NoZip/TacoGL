@@ -58,10 +58,7 @@ SourceLoader::SourceLoader(const ShaderFinder &finder)
 
 }
 
-namespace
-{
-  std::regex includeRegex("#include\\s+<(.+)>");
-}
+std::regex includeRegex("#include[[:space:]]+(.+)", std::regex::extended);
 
 void SourceLoader::load(
   const std::string &filename,
@@ -82,9 +79,10 @@ void SourceLoader::load(
   std::smatch matchGroups;
   while (std::getline(input, line))
   {
-    if (std::regex_match(line, matchGroups, includeRegex))
+    if (std::regex_search(line, matchGroups, includeRegex))
     {
       std::string include = matchGroups[1];
+      std::cout << include << std::endl;
 
       if (m_includes.find(include) != m_includes.end())
       {
